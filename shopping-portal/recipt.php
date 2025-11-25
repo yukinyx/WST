@@ -39,7 +39,7 @@ body {
                         <div class="billed"><span class="font-weight-bold text-uppercase">Order ID:</span><span class="ml-1">#<?php echo rand(1223,8371); ?></span></div>
                     </div>
                     <div class="col-md-6 text-right mt-3">
-                        <h4 style="color:green !important;" class="text-danger mb-0">RedMarket</h4><span>redmarktet.net</span>
+                        <h4 style="color:green !important;" class="text-danger mb-0">RedMarket</h4><span>g.batstate-u.edu.ph</span>
                     </div>
                 </div>
                 <div class="mt-3">
@@ -54,42 +54,52 @@ body {
                                 </tr>
                             </thead>
                             <?php
-
-
-                            $res=$pdo->prepare ("SELECT product_name FROM shopping_cart where user_email=? ");
-                            $res->execute([$_SESSION["email"]]);
-
-                            while($row = $res->fetch()){
-                            $rest=$pdo->prepare ("SELECT * FROM product where product_name=? ");
-                            $rest->execute([$row[0]]);
-
-                            while($com=$rest->fetch()){
-                            $loc="./admin/"
-
-
-
-
-
+                            // If the order was just created, we saved the items in session['last_order_items'] before clearing the cart.
+                            $runningTotal = 0.0;
+                            if (isset($_SESSION['last_order_items']) && is_array($_SESSION['last_order_items'])) {
+                                foreach ($_SESSION['last_order_items'] as $it) {
+                                    $prodName = isset($it['product_name']) ? $it['product_name'] : '';
+                                    $qty = isset($it['quantity']) ? (int)$it['quantity'] : 1;
+                                    $price = isset($it['unit_price']) ? (float)$it['unit_price'] : 0.0;
+                                    $line = isset($it['line_total']) ? (float)$it['line_total'] : ($qty * $price);
+                                    $runningTotal += $line;
                             ?>
                             <tbody>
                                 <tr>
-                                    <td><?php echo $com["product_name"]; ?></td>
-                                    <td>1</td>
-                                    <td><?php echo $com["product_price"]; ?></td>
-                                    <td></td>
+                                    <td><?php echo htmlspecialchars($prodName, ENT_QUOTES, 'UTF-8'); ?></td>
+                                    <td><?php echo $qty; ?></td>
+                                    <td><?php echo number_format($price, 2); ?></td>
+                                    <td><?php echo number_format($line, 2); ?></td>
                                 </tr>
                             </tbody>
-                                <?php
-
-
+                            <?php }
+                            } else {
+                                // Fallback: if session items are missing, attempt to read shopping_cart (may be empty)
+                                $res = $pdo->prepare("SELECT sc.product_name, COALESCE(sc.quantity,1) AS quantity, p.product_price FROM shopping_cart sc JOIN product p ON sc.product_name = p.product_name WHERE sc.user_email = ?");
+                                $res->execute([$_SESSION["email"]]);
+                                while ($row = $res->fetch()) {
+                                    $prodName = $row['product_name'];
+                                    $qty = isset($row['quantity']) ? (int)$row['quantity'] : 1;
+                                    $price = isset($row['product_price']) ? (float)$row['product_price'] : 0.0;
+                                    $line = $qty * $price;
+                                    $runningTotal += $line;
+                            ?>
+                            <tbody>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($prodName, ENT_QUOTES, 'UTF-8'); ?></td>
+                                    <td><?php echo $qty; ?></td>
+                                    <td><?php echo number_format($price, 2); ?></td>
+                                    <td><?php echo number_format($line, 2); ?></td>
+                                </tr>
+                            </tbody>
+                            <?php }
                             }
-                            }?>
-                            </body>
+                                ?>
                                 <tr>
                                     <td></td>
                                     <td></td>
                                     <td>Total</td>
-                                    <td><?php echo $_SESSION["total"]; ?></td>
+                                    <td><?php echo number_format($runningTotal, 2); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -104,16 +114,14 @@ body {
 </div>
 <?php
     if(isset($_POST["check-out"])) {
-
-
-
-    $stmt= $pdo->prepare ("delete from shopping_cart where user_email = ?");
-    $stmt->execute([$_SESSION["email"]]);
-    unset($_SESSION['total']);
-    header('location:index.php');
-
-
-}
-
+        // Clear session-held last order items and total then redirect home
+        if (isset($_SESSION['last_order_items'])) {
+            unset($_SESSION['last_order_items']);
+        }
+        if (isset($_SESSION['total'])) {
+            unset($_SESSION['total']);
+        }
+        header('location:index.php');
+    }
 
 ?>

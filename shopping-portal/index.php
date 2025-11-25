@@ -11,7 +11,9 @@ $pdo = get_connection();
             <div class="row">
                 <div class="col-lg-3">
                     <div class="header__logo">
-                        <a href="./index.php"><img style="" src="img/logo.png" alt="logo"></a>
+                        <a href="./index.php">
+                            <img src="img/logo.png" alt="logo" class="img-fluid" style="max-width: 180px; height: auto;">
+                        </a>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -34,9 +36,7 @@ $pdo = get_connection();
                     </div>
                 </div>
             </div>
-            <div class="humberger__open">
-                <i class="fa fa-bars"></i>
-            </div>
+            
         </div>
     </header>
    
@@ -57,7 +57,7 @@ $pdo = get_connection();
                             while($row = $res->fetch()){
 
                                 ?>
-                            <li id="echo $c;"><a href="#"><?php echo $row["category_name"]; ?></a></li>
+                            <li id="echo $c;"><a href="shop-grid.php?category=<?php echo urlencode($row['category_name']); ?>"><?php echo $row["category_name"]; ?></a></li>
                             <?php $c=$c+1; } ?>
 
                         </ul>
@@ -132,10 +132,17 @@ $pdo = get_connection();
                     <div class="featured__controls">
                         <ul>
                             <li class="active" data-filter="*">All</li>
-                            <li data-filter=".oranges">Laces</li>
-                            <li data-filter=".fresh-meat">Pins</li>
-                            <li data-filter=".vegetables">Textiles</li>
-                            <li data-filter=".fastfood">Merchandise</li>
+                            <?php
+                            try {
+                                $catStmt = $pdo->query("SELECT category_name FROM category");
+                                while ($catRow = $catStmt->fetch()) {
+                                    $catName = $catRow['category_name'];
+                                    $catClass = preg_replace('/[^A-Za-z0-9_\-]/', '', str_replace(' ', '', $catName));
+                                    echo '<li data-filter=".' . htmlspecialchars($catClass, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($catName, ENT_QUOTES, 'UTF-8') . '</li>';
+                                }
+                            } catch (Exception $e) {
+                            }
+                            ?>
                         </ul>
                     </div>
                 </div>
@@ -143,27 +150,29 @@ $pdo = get_connection();
             <div class="row featured__filter">
             <?php
             $c=0;
-        
+
             $res=$pdo->query("SELECT *  FROM product");
             while($row = $res->fetch()){
-        
-            $loc="../admin_portal/admin/"
+            $catValue = isset($row['category_name']) ? $row['category_name'] : '';
+            $x = $catValue !== '' ? preg_replace('/[^A-Za-z0-9_\-]/', '', str_replace(' ', '', $catValue)) : 'Uncategorized';
 
+            $loc = '../admin_portal/admin/';
 
             ?>
 
-                <div class="col-lg-3 col-md-4 col-sm-6 mix <?php echo $x ?>">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix <?php echo htmlspecialchars($x, ENT_QUOTES, 'UTF-8'); ?>">
                     <div class="featured__item">
-                        <div class="featured__item__pic set-bg" data-setbg="<?php echo '../admin_portal/admin/product-image/'.$row['image_file_name']; ?>">
+                        <div class="featured__item__pic set-bg" data-setbg="<?php echo htmlspecialchars($loc . $row['image_file_name'], ENT_QUOTES, 'UTF-8'); ?>">
                             <ul class="featured__item__pic__hover">
-                                <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                                <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-                                <li><a href="shop-details.php?product=<?php echo $row['product_name']; ?>"><i class="fa fa-shopping-cart"></i></a></li>
+                                <li><a href="shop-details.php?product=<?php echo urlencode($row['product_name']); ?>"><i class="fa fa-shopping-cart"></i></a></li>
                             </ul>
                         </div>
                         <div class="featured__item__text">
-                            <h6><a href="#"><?php echo $row["product_name"]; ?></a></h6>
-                            <h5>$<?php echo $row["product_price"]; ?></h5>
+                            <?php if ($catValue !== ''): ?>
+                          
+                            <?php endif; ?>
+                            <h6><a href="#"><?php echo htmlspecialchars($row["product_name"], ENT_QUOTES, 'UTF-8'); ?></a></h6>
+                            <h5>$<?php echo htmlspecialchars($row["product_price"], ENT_QUOTES, 'UTF-8'); ?></h5>
                         </div>
                     </div>
                 </div>

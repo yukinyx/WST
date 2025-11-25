@@ -25,8 +25,8 @@ $pdo = get_connection();
 
               <th>Order id</th>
               <th>Customer id</th>
-              <th>total cost</th>
-              <th>data of order</th>
+              <th>Total cost</th>
+              <th>Date of order</th>
               <th>Quantity</th>
 
 
@@ -44,7 +44,7 @@ $pdo = get_connection();
                   <td><?php echo $row["order_id"]; ; ?></td>
                   <td><?php echo $row["customer_id"]; ; ?></td>
                   <td>$<?php echo $row["total_cost"]; ; ?></td>
-                  <td><?php echo $row["data_created"]; ; ?></td>
+                  <td><?php echo $row["created_at"]; ; ?></td>
                   <td><?php echo $row["quantity"]; ; ?></td>
               </tr>
            
