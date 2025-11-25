@@ -103,16 +103,17 @@ $pdo = get_connection();
           </thead>
           
 			<?php 
-				$res=$pdo->query("SELECT * FROM product");
-                $c=0;
-				while($row = $res->fetch()){
+                $res=$pdo->query("SELECT * FROM product");
+                // use a display counter so the table shows 1,2,3... rather than DB product_id values
+                $c=1;
+                while($row = $res->fetch()){
 
 
 
 					?>
              <form action="" method="post" >
 			<tbody id="product_list">
-              <td style="vertical-align: middle;"><?php echo $row["product_id"]; ?></td>
+              <td style="vertical-align: middle;"><?php echo $c; ?></td>
               <td style="vertical-align: middle;"><?php echo $row["product_name"]; ?></td>
 
               <td style="vertical-align: middle;"><?php echo $row["quantity"]; ?></td>
@@ -193,10 +194,7 @@ product inserted successfully !
                             </div>
                         </div>
                         <div class="col-12">
-                            <div class="form-group">
-                                <label>disease</label>
-                                <input type="text" name="disease" class="form-control" placeholder="Enter Product disease" required>
-                            </div>
+                           
                         </div>
 
                         <div class="col-12">
@@ -332,13 +330,30 @@ product inserted successfully !
 			document.getElementById("error").style.display="block";
 			</script>
             <?php
-        }else {
-            $product_name=$_POST["product_name"];
-            $price=$_POST["price"];
-            $quantity=$_POST["quantity"];
-            $disease=$_POST["disease"];
-            $stmt= $pdo->prepare("insert into product (product_name,product_price,quantity,disease,image_file_name) value(?,?,?,?,?) ");
-            $stmt->execute([$product_name, $price,$quantity ,$disease,$dst]);
+    }else {
+      $product_name=$_POST["product_name"];
+      $price=$_POST["price"];
+      $quantity=$_POST["quantity"];
+      
+      $category_name = isset($_POST['category_name']) ? $_POST['category_name'] : null;
+
+      $hasCategoryCol = false;
+      try {
+        $colCheck = $pdo->query("SHOW COLUMNS FROM product LIKE 'category_name'");
+        if ($colCheck && $colCheck->rowCount() > 0) {
+          $hasCategoryCol = true;
+        }
+      } catch (Exception $e) {
+        $hasCategoryCol = false;
+      }
+
+      if ($hasCategoryCol && $category_name !== null) {
+        $stmt = $pdo->prepare("INSERT INTO product (product_name, product_price, quantity, image_file_name, category_name) VALUES (?,?,?,?,?)");
+        $stmt->execute([$product_name, $price, $quantity, $dst, $category_name]);
+      } else {
+        $stmt = $pdo->prepare("INSERT INTO product (product_name, product_price, quantity, image_file_name) VALUES (?,?,?,?)");
+        $stmt->execute([$product_name, $price, $quantity, $dst]);
+      }
         ?>
         <script type="text/javascript">
 
