@@ -39,23 +39,10 @@
                         <div class="header__top__left">
                             <ul>
                                 <li><i class="fa fa-envelope"></i> g.batstate-u.edu.ph</li>
-                                <li>Free Shipping for all Order of $99</li>
                             </ul>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="header__top__right">
-                            
-                            
-							<div class="header__top__right__language">
-                            <span class="arrow_carrot-down"></span>
-                                <ul>
-                                    <li><a href="profile.php">Profile</a></li>
-                                    <li><a href="logout.php">Logout</a></li>
-                                </ul>
-							</div>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>

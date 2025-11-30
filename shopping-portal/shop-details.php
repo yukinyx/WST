@@ -217,9 +217,10 @@ if(isset($_POST["add_to_cart"])) {
         }
 
         if ($hasQtyCol) {
-            $update = $pdo->prepare("UPDATE shopping_cart SET quantity = ? WHERE product_name = ? AND user_email = ?");
-            $update->execute([$qty, $x_value, $_SESSION['email']]);
-            ?>
+    // CHANGE: Use 'quantity = quantity + ?' to add to existing amount
+    $update = $pdo->prepare("UPDATE shopping_cart SET quantity = quantity + ? WHERE product_name = ? AND user_email = ?");
+    $update->execute([$qty, $x_value, $_SESSION['email']]);
+    ?>
             <script type="text/javascript">
                 document.getElementById("error").style.display="none";
                 document.getElementById("success").style.display="block";
