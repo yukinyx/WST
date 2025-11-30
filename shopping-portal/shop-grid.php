@@ -10,7 +10,9 @@ $pdo = get_connection();
             <div class="row">
                 <div class="col-lg-3">
                     <div class="header__logo">
-                        <a href="./index.php"><img src="img/logo.png" alt=""></a>
+                        <a href="./index.php">
+                            <img src="img/logo.png" alt="logo" class="img-fluid" style="max-width: 180px; height: auto;">
+                        </a>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -26,7 +28,6 @@ $pdo = get_connection();
                 <div class="col-lg-3">
                     <div class="header__cart">
                         <ul>
-                            <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
                             <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
                         </ul>
                         <div class="header__cart__price">item: <span>$150.00</span></div>
@@ -56,7 +57,7 @@ $pdo = get_connection();
                             while($row = $res->fetch()){
 
                                 ?>
-                            <li id="echo $c;"><a href="#"><?php echo $row["category_name"]; ?></a></li>
+                            <li id="echo $c;"><a href="shop-grid.php?category=<?php echo urlencode($row['category_name']); ?>"><?php echo $row["category_name"]; ?></a></li>
                             <?php $c=$c+1; } ?>
 
                         </ul>
@@ -187,7 +188,7 @@ $pdo = get_connection();
 								
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item">
-                                <div class="product__item__pic set-bg" data-setbg="<?php echo '../admin_portal/admin/product-image/'.$row['image_file_name']; ?>">
+                                <div class="product__item__pic set-bg" data-setbg="<?php echo '../admin_portal/admin/'.$row['image_file_name']; ?>">
                                     <ul class="product__item__pic__hover">
 
 

@@ -25,7 +25,9 @@ $pdo = get_connection();
             <div class="row">
                 <div class="col-lg-3">
                     <div class="header__logo">
-                        <a href="./index.php"><img src="img/logo.png" alt=""></a>
+                        <a href="./index.php">
+                            <img src="img/logo.png" alt="logo" class="img-fluid" style="max-width: 180px; height: auto;">
+                        </a>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -118,18 +120,11 @@ $pdo = get_connection();
 
 
         ?>
-    <section class="breadcrumb-section set-bg" data-setbg="<?php echo $loc.$row["image_file_name"]; ?>">
+    <section class="breadcrumb-section set-bg" data-setbg="img/batstateu-banner.png">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <div class="breadcrumb__text">
-                        <h2><?php echo $row["product_name"]; ?></h2>
-                        <div class="breadcrumb__option">
-                            <a href="./index.php">Home</a>
-                            <a href="./shop-grid.php">products</a>
-                            <span><?php echo $row["product_name"]; ?></span>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -162,204 +157,30 @@ $pdo = get_connection();
                 <div class="col-lg-6 col-md-6">
                     <div class="product__details__text">
                         <h3><?php echo $row["product_name"]; ?></h3>
-                        <div class="product__details__rating">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star-half-o"></i>
-                            <span>(18 reviews)</span>
-                        </div>
                         <div class="product__details__price">$<?php echo $row["product_price"]; ?></div>
-                        <p><?php echo $row["product_name"]; ?> is good for <?php echo $row["disease"]; ?></p>
                         <div class="product__details__quantity">
                             <div class="quantity">
                                 <div class="pro-qty">
-                                    <input type="text" value="1">
+                                    <input type="number" name="quantity" value="1" min="1">
                                 </div>
                             </div>
                         </div>
                         <form method="post" action="">
                             <input type = "hidden" name = "the_id" value = "<?php echo $row["product_name"]; ?>" />
-                        <button name="add_to_cart" class="primary-btn">ADD TO CARD</button>
+                        <button name="add_to_cart" class="primary-btn">ADD TO CART</button>
                         </form>
-                        <a href="#" class="heart-icon"><span class="icon_heart_alt"></span></a>
                         <ul>
                             <li><b>Availability</b> <span><?php echo $row["quantity"]; ?> In Stock</span></li>
-                            <li><b>Shipping</b> <span>01 day shipping. <samp>Free pickup today</samp></span></li>
                             <li><b>Weight</b> <span>0.5 kg</span></li>
-                            <li><b>Share on</b>
-                                <div class="share">
-                                    <a href="#"><i class="fa fa-facebook"></i></a>
-                                    <a href="#"><i class="fa fa-twitter"></i></a>
-                                    <a href="#"><i class="fa fa-instagram"></i></a>
-                                    <a href="#"><i class="fa fa-pinterest"></i></a>
-                                </div>
-                            </li>
                         </ul>
                     </div>
                 </div>
                 <?php  } ?>
-                <div class="col-lg-12">
-                    <div class="product__details__tab">
-                        <ul class="nav nav-tabs" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab"
-                                    aria-selected="true">Description</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab"
-                                    aria-selected="false">Information</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab"
-                                    aria-selected="false">Reviews <span>(1)</span></a>
-                            </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="tabs-1" role="tabpanel">
-                                <div class="product__details__tab__desc">
-                                    <h6>Products Infomation</h6>
-                                    <p>Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.
-                                        Pellentesque in ipsum id orci porta dapibus. Proin eget tortor risus. Vivamus
-                                        suscipit tortor eget felis porttitor volutpat. Vestibulum ac diam sit amet quam
-                                        vehicula elementum sed sit amet dui. Donec rutrum congue leo eget malesuada.
-                                        Vivamus suscipit tortor eget felis porttitor volutpat. Curabitur arcu erat,
-                                        accumsan id imperdiet et, porttitor at sem. Praesent sapien massa, convallis a
-                                        pellentesque nec, egestas non nisi. Vestibulum ac diam sit amet quam vehicula
-                                        elementum sed sit amet dui. Vestibulum ante ipsum primis in faucibus orci luctus
-                                        et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam
-                                        vel, ullamcorper sit amet ligula. Proin eget tortor risus.</p>
-                                        <p>Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Lorem
-                                        ipsum dolor sit amet, consectetur adipiscing elit. Mauris blandit aliquet
-                                        elit, eget tincidunt nibh pulvinar a. Cras ultricies ligula sed magna dictum
-                                        porta. Cras ultricies ligula sed magna dictum porta. Sed porttitor lectus
-                                        nibh. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a.
-                                        Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Sed
-                                        porttitor lectus nibh. Vestibulum ac diam sit amet quam vehicula elementum
-                                        sed sit amet dui. Proin eget tortor risus.</p>
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="tabs-2" role="tabpanel">
-                                <div class="product__details__tab__desc">
-                                    <h6>Products Infomation</h6>
-                                    <p>Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.
-                                        Pellentesque in ipsum id orci porta dapibus. Proin eget tortor risus.
-                                        Vivamus suscipit tortor eget felis porttitor volutpat. Vestibulum ac diam
-                                        sit amet quam vehicula elementum sed sit amet dui. Donec rutrum congue leo
-                                        eget malesuada. Vivamus suscipit tortor eget felis porttitor volutpat.
-                                        Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Praesent
-                                        sapien massa, convallis a pellentesque nec, egestas non nisi. Vestibulum ac
-                                        diam sit amet quam vehicula elementum sed sit amet dui. Vestibulum ante
-                                        ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;
-                                        Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula.
-                                        Proin eget tortor risus.</p>
-                                    <p>Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Lorem
-                                        ipsum dolor sit amet, consectetur adipiscing elit. Mauris blandit aliquet
-                                        elit, eget tincidunt nibh pulvinar a. Cras ultricies ligula sed magna dictum
-                                        porta. Cras ultricies ligula sed magna dictum porta. Sed porttitor lectus
-                                        nibh. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a.</p>
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="tabs-3" role="tabpanel">
-                                <div class="product__details__tab__desc">
-                                    <h6>Products Infomation</h6>
-                                    <p>Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.
-                                        Pellentesque in ipsum id orci porta dapibus. Proin eget tortor risus.
-                                        Vivamus suscipit tortor eget felis porttitor volutpat. Vestibulum ac diam
-                                        sit amet quam vehicula elementum sed sit amet dui. Donec rutrum congue leo
-                                        eget malesuada. Vivamus suscipit tortor eget felis porttitor volutpat.
-                                        Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Praesent
-                                        sapien massa, convallis a pellentesque nec, egestas non nisi. Vestibulum ac
-                                        diam sit amet quam vehicula elementum sed sit amet dui. Vestibulum ante
-                                        ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;
-                                        Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula.
-                                        Proin eget tortor risus.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
     <!-- Product Details Section End -->
 
-    <!-- Related Product Section Begin -->
-    <section class="related-product">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-title related__product__title">
-                        <h2>Related Product</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="product__item">
-                        <div class="product__item__pic set-bg" data-setbg="img/product/product-1.jpg">
-                            <ul class="product__item__pic__hover">
-                                <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                                <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-                                <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-                            </ul>
-                        </div>
-                        <div class="product__item__text">
-                            <h6><a href="#">Crab Pool Security</a></h6>
-                            <h5>$30.00</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="product__item">
-                        <div class="product__item__pic set-bg" data-setbg="img/product/product-2.jpg">
-                            <ul class="product__item__pic__hover">
-                                <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                                <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-                                <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-                            </ul>
-                        </div>
-                        <div class="product__item__text">
-                            <h6><a href="#">Crab Pool Security</a></h6>
-                            <h5>$30.00</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="product__item">
-                        <div class="product__item__pic set-bg" data-setbg="img/product/product-3.jpg">
-                            <ul class="product__item__pic__hover">
-                                <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                                <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-                                <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-                            </ul>
-                        </div>
-                        <div class="product__item__text">
-                            <h6><a href="#">Crab Pool Security</a></h6>
-                            <h5>$30.00</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="product__item">
-                        <div class="product__item__pic set-bg" data-setbg="img/product/product-7.jpg">
-                            <ul class="product__item__pic__hover">
-                                <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                                <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-                                <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-                            </ul>
-                        </div>
-                        <div class="product__item__text">
-                            <h6><a href="#">Crab Pool Security</a></h6>
-                            <h5>$30.00</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Related Product Section End -->
 	<?php include_once("./template/footer.php"); ?>
     <!-- Js Plugins -->
     <script src="js/jquery-3.3.1.min.js"></script>
@@ -383,22 +204,61 @@ if(isset($_POST["add_to_cart"])) {
     $res ->execute([$x_value,$_SESSION["email"]]);
     $count =$res->rowCount();
     if($count >0) {
+        // If item already exists in cart, update its quantity to the posted value (if DB supports quantity)
+        $qty = isset($_POST['quantity']) && is_numeric($_POST['quantity']) && $_POST['quantity'] > 0 ? (int)$_POST['quantity'] : 1;
+        $hasQtyCol = false;
+        try {
+            $colCheck = $pdo->query("SHOW COLUMNS FROM shopping_cart LIKE 'quantity'");
+            if ($colCheck && $colCheck->rowCount() > 0) {
+                $hasQtyCol = true;
+            }
+        } catch (Exception $e) {
+            $hasQtyCol = false;
+        }
 
-        ?>
-        <script type="text/javascript">
-            document.getElementById("success").style.display="none";
-            document.getElementById("error").style.display="block";
-            setTimeout(function () {
-                window.location.href=window.location.href;
-
-            },1000);
-        </script>
-        <?php
-    }else {
+        if ($hasQtyCol) {
+            $update = $pdo->prepare("UPDATE shopping_cart SET quantity = ? WHERE product_name = ? AND user_email = ?");
+            $update->execute([$qty, $x_value, $_SESSION['email']]);
+            ?>
+            <script type="text/javascript">
+                document.getElementById("error").style.display="none";
+                document.getElementById("success").style.display="block";
+                setTimeout(function () { window.location.href=window.location.href; },1000);
+            </script>
+            <?php
+        } else {
+            // Quantity not supported in DB - keep previous behavior (show error)
+            ?>
+            <script type="text/javascript">
+                document.getElementById("success").style.display="none";
+                document.getElementById("error").style.display="block";
+                setTimeout(function () { window.location.href=window.location.href; },1000);
+            </script>
+            <?php
+        }
+    } else {
         $product_name = $_POST["the_id"];
+        // Get quantity from POST (fallback to 1)
+        $qty = isset($_POST['quantity']) && is_numeric($_POST['quantity']) && $_POST['quantity'] > 0 ? (int)$_POST['quantity'] : 1;
 
-        $stmt = $pdo->prepare("insert into shopping_cart (product_name,user_email) value(?,?) ");
-        $stmt->execute([$product_name,$_SESSION["email"]] );
+        // If the shopping_cart table has a quantity column we'll insert it, otherwise fall back to previous behaviour.
+        $hasQtyCol = false;
+        try {
+            $colCheck = $pdo->query("SHOW COLUMNS FROM shopping_cart LIKE 'quantity'");
+            if ($colCheck && $colCheck->rowCount() > 0) {
+                $hasQtyCol = true;
+            }
+        } catch (Exception $e) {
+            $hasQtyCol = false;
+        }
+
+        if ($hasQtyCol) {
+            $stmt = $pdo->prepare("INSERT INTO shopping_cart (product_name,user_email,quantity) VALUES (?,?,?)");
+            $stmt->execute([$product_name, $_SESSION["email"], $qty]);
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO shopping_cart (product_name,user_email) value(?,?) ");
+            $stmt->execute([$product_name, $_SESSION["email"]]);
+        }
         ?>
         <script type="text/javascript">
 
