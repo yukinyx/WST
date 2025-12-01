@@ -81,12 +81,7 @@
 						    	<input class="form-control" type="Phone" id="phoneNo" name="phoneNo" value="<?php echo (isset($_SESSION['phoneNo'])) ? $_SESSION['phoneNo'] : ''; unset($_SESSION['phoneNo']) ?>" placeholder="Phone Number">
 						  	</div>
 						</div>
-						<div class="form-group row">
-						  	<label for="phoneNo" class="col-3 col-form-label">Address</label>
-						  	<div class="col-9">
-						    	<input class="form-control" type="text" id="address" name="address" value="<?php echo (isset($_SESSION['address'])) ? $_SESSION['address'] : ''; unset($_SESSION['address']) ?>" placeholder="Address">
-						  	</div>
-						</div>	
+						
 				    <hr>
 				    <div>
 				    	<button type="submit" class="btn btn-success" name="register"><i class="far fa-user"></i> Signup</button>

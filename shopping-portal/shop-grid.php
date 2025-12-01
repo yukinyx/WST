@@ -163,26 +163,20 @@ if(isset($_SESSION['email'])) {
                 <div class="col-lg-9">
                     <div class="hero__search">
                         <div class="hero__search__form">
-                            <form action="#">
-                                <input type="text" placeholder="What do you need?">
+                            <!-- FUNCTIONAL SEARCH FORM -->
+                            <form action="shop-grid.php" method="GET">
+                                <input type="text" name="search" placeholder="What do you need?" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
                                 <button type="submit" class="site-btn">SEARCH</button>
                             </form>
                         </div>
-                        <div class="hero__search__phone">
-                            <div class="hero__search__phone__icon">
-                                <i class="fa fa-phone"></i>
-                            </div>
-                            <div class="hero__search__phone__text">
-                                <h5>69696969696</h5>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
         </div>
     </section>
   
-    <section class="product spad">
+   <section class="product spad">
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-5">
@@ -191,53 +185,46 @@ if(isset($_SESSION['email'])) {
                             <h4>Department</h4>
                             <ul>
                             <?php
-                            $c=0;
                             $res=$pdo->query("SELECT category_name FROM category");
                             while($row = $res->fetch()){
                                 ?>
-                            <li id="echo $c;"><a href="#"><?php echo $row["category_name"]; ?></a></li>
-                            <?php $c=$c+1; } ?>
+                            <li><a href="shop-grid.php?category=<?php echo urlencode($row['category_name']); ?>"><?php echo $row["category_name"]; ?></a></li>
+                            <?php } ?>
                         </ul>
                         </div>
-                       
                     </div>
                 </div>
                 <div class="col-lg-9 col-md-7">
-                    <div class="filter__item">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-5">
-                                <div class="filter__sort">
-                                    <span>Sort By</span>
-                                    <select>
-                                        <option value="0">Default</option>
-                                        <option value="0">yes</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4">
-                                <div class="filter__found">
-								<?php
-								$stmt = $pdo->query('SELECT COUNT(product_name) from product');
-								$s=$stmt->fetch();
-                                ?>    
-								<h6><span><?php echo $s[0]; ?></span> Products found</h6>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-3">
-                                <div class="filter__option">
-                                    <span class="icon_grid-2x2"></span>
-                                    <span class="icon_ul"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="row">
 					    <?php
-							$c=0;
-							$res=$pdo->query("SELECT * FROM product");
-							while($row = $res->fetch()){
+                            // --- SEARCH LOGIC ---
+                            if(isset($_GET['search']) && !empty($_GET['search'])){
+                                $search_term = "%" . $_GET['search'] . "%";
+                                $stmt = $pdo->prepare("SELECT * FROM product WHERE product_name LIKE ?");
+                                $stmt->execute([$search_term]);
+                            } 
+                            // --- CATEGORY FILTER LOGIC ---
+                            else if(isset($_GET['category']) && !empty($_GET['category'])){
+                                $cat = $_GET['category'];
+                                $stmt = $pdo->prepare("SELECT * FROM product WHERE category_name = ?");
+                                $stmt->execute([$cat]);
+                            }
+                            // --- DEFAULT: SHOW ALL ---
+                            else {
+                                $stmt = $pdo->prepare("SELECT * FROM product");
+                                $stmt->execute();
+                            }
+
+                            $count = $stmt->rowCount();
+                            
+                            if($count == 0) {
+                                echo "<div class='col-lg-12'><h5>No products found.</h5></div>";
+                            }
+
+							while($row = $stmt->fetch()){
 								$loc="../admin_portal/admin/"
-										?>
+						?>
+								
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item">
                                 <div class="product__item__pic set-bg" data-setbg="<?php echo '../admin_portal/admin/'.$row['image_file_name']; ?>">
@@ -246,12 +233,12 @@ if(isset($_SESSION['email'])) {
                                     </ul>
                                 </div>
                                 <div class="product__item__text">
-                                    <h6><a href="#"><?php echo $row["product_name"]; ?></a></h6>
+                                    <h6><a href="shop-details.php?product=<?php echo $row["product_name"]; ?>"><?php echo $row["product_name"]; ?></a></h6>
                                     <h5>$<?php echo $row["product_price"]; ?></h5>
                                 </div>
                             </div>
                         </div>
-						<?php $c=$c+1; } ?>
+						<?php } ?>
                     </div>
                 </div>
             </div>

@@ -13,21 +13,29 @@ $email = $_SESSION["email"];
 
 // 2. Handle Form Submission (Save Changes)
 if(isset($_POST["save"])){
-
     $customer_name = $_POST["name"];
     $phone_number = $_POST["phone_number"];
     
-    // Handle Image Upload
+    // Handle Image Upload with Validation
     if (isset($_FILES["profile"]["name"]) && $_FILES["profile"]["name"] != ""){
-        $v1 = rand(1111,9999);
-        $v2 = rand(1111,9999);
-        $v3 = md5($v1.$v2);
-        $fnm = $_FILES["profile"]["name"];
-        $dst = "user-image/".$v3.$fnm;
-        
-        if(move_uploaded_file($_FILES["profile"]["tmp_name"], $dst)){
-            $stmt = $pdo->prepare('UPDATE user SET IMG_URL = :dst WHERE email = :email');
-            $stmt->execute(['dst' => $dst, 'email' => $email]);
+        $fileName = $_FILES["profile"]["name"];
+        $fileTmp = $_FILES["profile"]["tmp_name"];
+        $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $allowed = array('jpg', 'jpeg', 'png');
+
+        if(in_array($fileExt, $allowed)) {
+            $v1 = rand(1111,9999);
+            $v2 = rand(1111,9999);
+            $v3 = md5($v1.$v2);
+            // Use timestamp to ensure unique filename if md5 collides or for cache busting
+            $dst = "user-image/".$v3."_".time().".".$fileExt;
+            
+            if(move_uploaded_file($fileTmp, $dst)){
+                $stmt = $pdo->prepare('UPDATE user SET IMG_URL = :dst WHERE email = :email');
+                $stmt->execute(['dst' => $dst, 'email' => $email]);
+            }
+        } else {
+            echo "<script>alert('Invalid file format. Only JPG, JPEG, and PNG are allowed.');</script>";
         }
     }
     
@@ -35,7 +43,6 @@ if(isset($_POST["save"])){
     $sql = "UPDATE user SET ";
     $params = [];
     $updates = [];
-
 
     if(!empty($phone_number)) { $updates[] = "phone_number = ?"; $params[] = $phone_number; }
     if(!empty($customer_name)) { $updates[] = "customerName = ?"; $params[] = $customer_name; }
@@ -47,7 +54,7 @@ if(isset($_POST["save"])){
         $stmt->execute($params);
     }
     
-    // Redirect to self to refresh data and prevent form resubmission
+    // Redirect to self to refresh data
     header('Location: profile.php');
     exit;
 }
@@ -66,7 +73,7 @@ if(isset($_POST['cancel'])){
     exit;
 }
 
-// 5. Fetch Current User Data (AFTER updates are processed)
+// 5. Fetch Current User Data
 $res=$pdo->prepare("SELECT * FROM user where email =?");
 $res->execute([$email]);
 $row = $res->fetch();
@@ -115,10 +122,10 @@ $profileImage = !empty($row["IMG_URL"]) ? $row["IMG_URL"] : 'img/default-user.pn
             border-radius: 50%;
             border: 5px solid #f9f9f9;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
         }
-        .btn-upload {
+        .upload-btn-wrapper {
             margin-top: 10px;
-            font-size: 12px;
         }
         .form-label {
             font-weight: 600;
@@ -130,13 +137,19 @@ $profileImage = !empty($row["IMG_URL"]) ? $row["IMG_URL"] : 'img/default-user.pn
             border-radius: 4px;
             margin-bottom: 20px;
         }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e1e1e1;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
         .section-title {
             font-size: 24px;
             font-weight: 700;
             color: #1c1c1c;
-            border-bottom: 1px solid #e1e1e1;
-            padding-bottom: 15px;
-            margin-bottom: 30px;
+            margin: 0;
         }
         .btn-primary {
             background: #7fad39;
@@ -188,6 +201,7 @@ $profileImage = !empty($row["IMG_URL"]) ? $row["IMG_URL"] : 'img/default-user.pn
         @media (max-width: 767px) {
             .mobile-bottom-nav { display: flex; }
             .profile-container { margin: 20px; padding: 20px; }
+            .section-title { font-size: 20px; }
         }
     </style>
 </head>
@@ -206,20 +220,26 @@ $profileImage = !empty($row["IMG_URL"]) ? $row["IMG_URL"] : 'img/default-user.pn
     <!-- Main Profile Content -->
     <div class="container">
         <div class="profile-container">
-            <h4 class="section-title">Account Settings</h4>
+            <div class="section-header">
+                <h4 class="section-title">Account Settings</h4>
+                <!-- LOGOUT BUTTON ADDED HERE -->
+                <a href="logout.php" class="btn btn-outline-danger btn-sm">
+                    <i class="fa fa-sign-out"></i> Logout
+                </a>
+            </div>
             
             <form method="POST" enctype="multipart/form-data">
                 <!-- Profile Image Section -->
                 <div class="profile-header">
                     <div class="profile-img-container">
                         <!-- Fallback image logic handled in PHP above -->
-                        <img src="<?php echo $profileImage; ?>" class="profile-img" alt="Profile Photo">
+                        <img id="img-preview" src="<?php echo $profileImage; ?>" class="profile-img" alt="Profile Photo">
                     </div>
                     <div class="upload-btn-wrapper">
-                        <label class="btn btn-outline-dark btn-sm" for="upload-photo">
+                        <label class="btn btn-outline-dark btn-sm" for="upload-photo" style="cursor: pointer;">
                             <i class="fa fa-camera"></i> Change Photo
                         </label>
-                        <input type="file" name="profile" id="upload-photo" style="display:none;">
+                        <input type="file" name="profile" id="upload-photo" style="display:none;" accept=".jpg,.jpeg,.png">
                     </div>
                     <small class="text-muted d-block mt-2">Allowed .png, .jpg. Max size 1MB</small>
                 </div>
@@ -301,6 +321,28 @@ $profileImage = !empty($row["IMG_URL"]) ? $row["IMG_URL"] : 'img/default-user.pn
     <!-- JS Scripts -->
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+
+    <script>
+        // Immediate Photo Preview Script
+        document.getElementById('upload-photo').addEventListener('change', function(event) {
+            var file = event.target.files[0];
+            if(file){
+                // Optional: Check file type here for immediate feedback before upload
+                var fileType = file.name.split('.').pop().toLowerCase();
+                if(['jpg', 'jpeg', 'png'].indexOf(fileType) === -1) {
+                    alert('Only .jpg, .jpeg, and .png files are allowed!');
+                    this.value = ''; // Clear input
+                    return;
+                }
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('img-preview').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
     
 </body>
 </html>
