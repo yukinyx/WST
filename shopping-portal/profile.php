@@ -1,141 +1,306 @@
-
 <?php
 session_start();
-if(isset( $_SESSION["email"]) &&  $_SESSION["email"] != "") {
-  
-    
-} else {
+include "lib/functions.php";
+$pdo = get_connection();
+
+// 1. Check Authentication
+if(!isset($_SESSION["email"]) || $_SESSION["email"] == "") {
     header('location:login.php');
+    exit;
 }
 
+$email = $_SESSION["email"];
 
+// 2. Handle Form Submission (Save Changes)
+if(isset($_POST["save"])){
+
+    $customer_name = $_POST["name"];
+    $phone_number = $_POST["phone_number"];
+    
+    // Handle Image Upload
+    if (isset($_FILES["profile"]["name"]) && $_FILES["profile"]["name"] != ""){
+        $v1 = rand(1111,9999);
+        $v2 = rand(1111,9999);
+        $v3 = md5($v1.$v2);
+        $fnm = $_FILES["profile"]["name"];
+        $dst = "user-image/".$v3.$fnm;
+        
+        if(move_uploaded_file($_FILES["profile"]["tmp_name"], $dst)){
+            $stmt = $pdo->prepare('UPDATE user SET IMG_URL = :dst WHERE email = :email');
+            $stmt->execute(['dst' => $dst, 'email' => $email]);
+        }
+    }
+    
+    // Update Info
+    $sql = "UPDATE user SET ";
+    $params = [];
+    $updates = [];
+
+
+    if(!empty($phone_number)) { $updates[] = "phone_number = ?"; $params[] = $phone_number; }
+    if(!empty($customer_name)) { $updates[] = "customerName = ?"; $params[] = $customer_name; }
+
+    if(count($updates) > 0){
+        $sql .= implode(", ", $updates) . " WHERE email = ?";
+        $params[] = $email;
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+    }
+    
+    // Redirect to self to refresh data and prevent form resubmission
+    header('Location: profile.php');
+    exit;
+}
+
+// 3. Handle Account Deactivation
+if(isset($_POST['deactivate'])){
+    $stmt=$pdo->prepare('DELETE FROM user WHERE email = ?');
+    $stmt->execute([$email]);
+    header('location:logout.php');
+    exit;
+}
+
+// 4. Handle Cancel
+if(isset($_POST['cancel'])){
+    header('location:index.php');
+    exit;
+}
+
+// 5. Fetch Current User Data (AFTER updates are processed)
+$res=$pdo->prepare("SELECT * FROM user where email =?");
+$res->execute([$email]);
+$row = $res->fetch();
+
+// Default image fallback
+$profileImage = !empty($row["IMG_URL"]) ? $row["IMG_URL"] : 'img/default-user.png';
 ?>
-
-<?php include "lib/functions.php";
-$pdo = get_connection();
-?>
-
-
-<link rel="stylesheet" href="css/profile.css" type="text/css">
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings</title>
+    <!-- Use the same CSS as the rest of the site + FontAwesome -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f5f5f5;
+            padding-bottom: 80px; /* Space for mobile nav */
+        }
+        .profile-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .profile-img-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+        }
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid #f9f9f9;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .btn-upload {
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #1c1c1c;
+            margin-bottom: 8px;
+        }
+        .form-control {
+            height: 45px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1c1c1c;
+            border-bottom: 1px solid #e1e1e1;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        .btn-primary {
+            background: #7fad39;
+            border: none;
+            padding: 10px 30px;
+        }
+        .btn-primary:hover {
+            background: #719a32;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            border: none;
+        }
+        .top-nav-bar {
+            background: #fff;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        /* Mobile Bottom Nav Styles */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 99999;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #e1e1e1;
+        }
+        .mobile-bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #1c1c1c;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            width: 20%;
+        }
+        .mobile-bottom-nav .nav-item i { font-size: 18px; margin-bottom: 4px; color: #666; transition: 0.3s; }
+        .mobile-bottom-nav .nav-item.active i, .mobile-bottom-nav .nav-item:hover i { color: #7fad39; }
+        
+        @media (max-width: 767px) {
+            .mobile-bottom-nav { display: flex; }
+            .profile-container { margin: 20px; padding: 20px; }
+        }
+    </style>
+</head>
 <body>
-<div class="wrapper bg-white mt-sm-5">
-    <h4 class="pb-4 border-bottom">Account settings</h4>
-	<form method="POST" enctype="multipart/form-data">
-			 <?php
-                $res=$pdo->prepare("SELECT * FROM user where email =?");
-                $email =$_SESSION["email"];
-                $res->execute([$email]);
-              
-                while($row = $res->fetch()){
-					
-                    ?>
-    <div class="d-flex align-items-start py-3 border-bottom"> <img src="<?php echo $row["IMG_URL"]; ?>" class="img" alt="">
-        <div class="pl-sm-4 pl-2" id="img-section"> <b>Profile Photo</b>
-            <p>Accepted file type .png. Less than 1MB</p> <input type ="file" name="profile" class="btn button border">
-        </div>
-    </div>
 
-    <div class="py-2">
-        <div class="row py-2">
-
-
-	<div class="py-2">
-		<div class="row py-2">		
-            <div class="col-md-6"> <label for="firstname">Name</label> <input type="text" name="name" class="bg-light form-control" placeholder="<?php echo $row["customerName"]; ?>"> </div>
-			<div class="col-md-6"> <label for="address">Address</label> <input type="text" name="address" class="bg-light form-control" placeholder="<?php echo $row["address"]; ?>"> </div>
-        </div>
-        <div class="row py-2">
-            <div class="col-md-6"> <label for="email">Email Address</label> <div class="bg-light form-control"><?php echo $row["email"]; ?></div> 
-			
-			</div>
-            <div class="col-md-6 pt-md-0 pt-3"> <label for="phone">Phone Number</label> <input type="" name="phone_number" class="bg-light form-control" placeholder="<?php echo $row["phone_number"]; ?>"> </div>
-        </div>
-        
-				<?php } ?>
-        <div class="py-3 pb-4 border-bottom"> <button class="btn btn-primary mr-3" name="save">Save Changes</button> <button name="cancel"  class="btn border button">Cancel</button> </div>
-        <div class="d-sm-flex align-items-center pt-3" id="deactivate">
-            <div> <b>Deactivate your account</b>
-                <p>Details about your company account and password</p>
+    <!-- Simple Top Bar for Desktop Navigation -->
+    <div class="top-nav-bar d-none d-md-block">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="index.php"><img src="img/logo.png" style="max-width: 120px;"></a>
+                <a href="index.php" class="btn btn-outline-secondary btn-sm"><i class="fa fa-arrow-left"></i> Back to Home</a>
             </div>
-            <div class="ml-auto"> <button class="btn danger" name= deactivate>Deactivate</button> </div>
-			</form>
         </div>
     </div>
-</div>
+
+    <!-- Main Profile Content -->
+    <div class="container">
+        <div class="profile-container">
+            <h4 class="section-title">Account Settings</h4>
+            
+            <form method="POST" enctype="multipart/form-data">
+                <!-- Profile Image Section -->
+                <div class="profile-header">
+                    <div class="profile-img-container">
+                        <!-- Fallback image logic handled in PHP above -->
+                        <img src="<?php echo $profileImage; ?>" class="profile-img" alt="Profile Photo">
+                    </div>
+                    <div class="upload-btn-wrapper">
+                        <label class="btn btn-outline-dark btn-sm" for="upload-photo">
+                            <i class="fa fa-camera"></i> Change Photo
+                        </label>
+                        <input type="file" name="profile" id="upload-photo" style="display:none;">
+                    </div>
+                    <small class="text-muted d-block mt-2">Allowed .png, .jpg. Max size 1MB</small>
+                </div>
+
+                <!-- Form Fields -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($row["customerName"] ?? ''); ?>" placeholder="Enter your name">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Email Address</label>
+                        <input type="text" class="form-control" value="<?php echo htmlspecialchars($row["email"] ?? ''); ?>" readonly style="background-color: #e9ecef;">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" name="phone_number" class="form-control" value="<?php echo htmlspecialchars($row["phone_number"] ?? ''); ?>" placeholder="Enter phone number">
+                    </div>
+                    
+                </div>
+
+                <div class="mt-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <button type="submit" class="btn btn-primary" name="save">Save Changes</button>
+                        <button type="submit" name="cancel" class="btn btn-light ml-2">Cancel</button>
+                    </div>
+                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deactivateModal">Deactivate Account</button>
+                </div>
+                
+                <!-- Deactivate Modal Confirmation -->
+                <div class="modal fade" id="deactivateModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Confirm Deactivation</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to deactivate your account? This action cannot be undone.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="submit" name="deactivate" class="btn btn-danger">Yes, Deactivate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- MOBILE BOTTOM NAV -->
+    <div class="mobile-bottom-nav">
+        <a href="./index.php" class="nav-item">
+            <i class="fa fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="./shop-grid.php" class="nav-item">
+            <i class="fa fa-shopping-bag"></i>
+            <span>Shop</span>
+        </a>
+        <a href="./shoping-cart.php" class="nav-item">
+            <i class="fa fa-shopping-cart"></i>
+            <span>Cart</span>
+        </a>
+        <a href="./contact.php" class="nav-item">
+            <i class="fa fa-envelope"></i>
+            <span>Contact</span>
+        </a>
+        <a href="./profile.php" class="nav-item active">
+            <i class="fa fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    
 </body>
-
-<?php 
-	if(isset($_POST["save"])){
-		$address=$_POST["address"];
-		$customer_name=$_POST["name"];
-		$phone_number=$_POST["phone_number"];
-		$name =$_SESSION["username"][0];
-		$email =$_SESSION["email"];
-		
-		$v1=rand(1111,9999);
-        $v2=rand(1111,9999);
-        $v3=$v1.$v2;
-        $v3=md5($v3);
-		$fnm=$_FILES["profile"]["name"];
-        
-		
-		
-		if (isset($fnm) && $fnm!=""){
-			$dst="user-image/".$v3.$fnm;
-			copy($_FILES["profile"]["tmp_name"],$dst);
-			$stmt = $pdo->prepare('UPDATE USER SET IMG_URL =:dst WHERE email =:email');
-			$stmt->execute(['dst' => $dst,'email'=>$email]);
-			
-		}
-		
-		if(isset($address) && $address !=""){
-			$stmt = $pdo->prepare('UPDATE USER SET address =:address WHERE email =:email');
-			$stmt->execute(['address' => $address,'email'=>$email]);
-		}
-		if(isset($phone_number )&& $phone_number !=""){
-		
-			$stmt = $pdo->prepare('UPDATE USER SET phone_number =:phone_number WHERE email =:email');
-			$stmt->execute(['phone_number' => $phone_number,'email'=>$email]);
-		}
-
-		if(isset($customer_name)&& $customer_name!=""){	
-			$stmt = $pdo->prepare('UPDATE USER SET customerName =:customer_name WHERE email =:email');
-			$stmt->execute(['customer_name' => $customer_name,'email'=>$email]);
-		}
-		?>
-		
-		<script type="text/javascript">
-
-            setTimeout(function () {
-                window.location.href=window.location.href;
-
-            },100);
-        </script>
-	<?php
-	}
-	if(isset($_POST['deactivate'])){
-		
-		
-		$stmt=$pdo->prepare('DELETE FROM USER WHERE email =?');
-        $stmt->execute([$email]);
-		header('location:logout.php');
-	}
-	
-	if(isset($_POST['cancel'])){
-		header('location:index.php');
-	
-	
-	}
-	
-	?>
-
-
-
-
-
-
-
-
+</html>
