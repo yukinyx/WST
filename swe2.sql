@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 01, 2025 at 06:27 AM
+-- Generation Time: Dec 01, 2025 at 07:04 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -136,7 +136,9 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`product_id`, `product_name`, `product_price`, `image_file_name`, `category_id`, `quantity`, `category_name`) VALUES
-(32, 'lace', 23, 'product-image/76dbe380495c57bc1cda083c9834f9b7cat-1.jpg', 0, 4, 'Laces');
+(34, 'Lace', 70, 'product-image/cd8d6b172eb8df57a2b992904c82cab9cat-1.jpg', 0, 56, 'Laces'),
+(35, 'Uniform Textile', 150, 'product-image/e42a638f10be8ba0b27342fc16266b8acat-5.jpg', 0, 56, 'Textiles'),
+(36, 'University Pin', 50, 'product-image/579c309dad1a4e52441519de42cb7c00cat-2.jpg', 0, 76, 'Pins');
 
 -- --------------------------------------------------------
 
@@ -254,7 +256,7 @@ ALTER TABLE `order_items`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `product_id` double NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `product_id` double NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `shopping_cart`
