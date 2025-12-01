@@ -79,7 +79,7 @@ if(isset($_SESSION['email'])) {
                                 </a>
                             </li>
                         </ul>
-                        <div class="header__cart__price">item: <span></span></div>
+                        
                     </div>
                 </div>
             </div>

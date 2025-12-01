@@ -3,9 +3,22 @@ include "check_ath.php";
 ?>
 <?php include "lib/functions.php";
 $pdo = get_connection();
+// --- FETCH USER IMAGE FOR HEADER ---
+$profile_img_header = 'img/default-user.png'; // Default
+if(isset($_SESSION['email'])) {
+    $uStmt = $pdo->prepare("SELECT IMG_URL FROM user WHERE email = ?");
+    $uStmt->execute([$_SESSION['email']]);
+    $uRow = $uStmt->fetch();
+    if($uRow && !empty($uRow['IMG_URL'])) {
+        $profile_img_header = $uRow['IMG_URL'];
+    }
+}
 ?>
 <?php include "./template/top.php"; ?>
 <style>
+    .header-profile-img {
+        width: 30px; height: 30px; border-radius: 50%; object-fit: cover;
+    }
     .mobile-bottom-nav {
         display: none; 
         position: fixed;
@@ -185,9 +198,18 @@ $pdo = get_connection();
                     <div class="header__cart">
                         <ul>
                             <!-- Normal view Cart -->
-                            <li><a href="shoping-cart.php"><i class="fa fa-shopping-bag"></i></a></li>
+                            <li><a href="shoping-cart.php"><i class="fa fa-shopping-bag"></i></a><div class="header__cart__price" style= margin-left:.5em;>: <span><?php if (isset($_SESSION["total"])) echo "$".number_format($_SESSION["total"], 2); ?></span></div></li>
+                            
                             <!-- Profile Icon (Desktop/Normal View) -->
-                            <li><a href="./profile.php"><i class="fa fa-user"></i></a></li>
+                            <li>
+                                <a href="./profile.php">
+                                    <?php if(isset($_SESSION['email'])): ?>
+                                        <img src="<?php echo $profile_img_header; ?>" class="header-profile-img" alt="Profile">
+                                    <?php else: ?>
+                                        <i class="fa fa-user"></i>
+                                    <?php endif; ?>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>

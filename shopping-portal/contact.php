@@ -78,10 +78,10 @@ include "check_ath.php";
                 <div class="col-lg-3 col-md-3">
                     <div class="header__cart">
                         <ul>
-                            <li><a href="shoping-cart.php"><i class="fa fa-shopping-bag"></i> <span><?php echo isset($_SESSION['cart_count']) ? $_SESSION['cart_count'] : ''; ?></span></a></li>
+                            <li><a href="shoping-cart.php"><i class="fa fa-shopping-bag"></i></a><div class="header__cart__price" style= margin-left:.5em;>: <span><?php if (isset($_SESSION["total"])) echo "$".number_format($_SESSION["total"], 2); ?></span></div></li>
                             <li><a href="./profile.php"><i class="fa fa-user"></i></a></li>
                         </ul>
-                        <div class="header__cart__price">item: <span><?php if (isset($_SESSION["total"])) echo "$".number_format($_SESSION["total"], 2); ?></span></div>
+                        
                     </div>
                 </div>
             </div>

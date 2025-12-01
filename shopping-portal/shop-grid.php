@@ -91,11 +91,13 @@ if(isset($_SESSION['email'])) {
                 <div class="col-lg-3 col-md-3">
                     <div class="header__cart">
                         <ul>
-                            <li><a href="shoping-cart.php"><i class="fa fa-shopping-bag"></i> <span><?php echo isset($_SESSION['cart_count']) ? $_SESSION['cart_count'] : ''; ?></span></a></li>
+                            <!-- Normal view Cart -->
+                            <li><a href="shoping-cart.php"><i class="fa fa-shopping-bag"></i></a><div class="header__cart__price" style= margin-left:.5em;>: <span><?php if (isset($_SESSION["total"])) echo "$".number_format($_SESSION["total"], 2); ?></span></div></li>
+                            
+                            <!-- Profile Icon (Desktop/Normal View) -->
                             <li>
                                 <a href="./profile.php">
-                                    <!-- Logic to show profile image instead of icon if available -->
-                                    <?php if(strpos($profile_img_header, 'default-user') === false && strpos($profile_img_header, 'logo.png') === false): ?>
+                                    <?php if(isset($_SESSION['email'])): ?>
                                         <img src="<?php echo $profile_img_header; ?>" class="header-profile-img" alt="Profile">
                                     <?php else: ?>
                                         <i class="fa fa-user"></i>
@@ -103,7 +105,6 @@ if(isset($_SESSION['email'])) {
                                 </a>
                             </li>
                         </ul>
-                        <div class="header__cart__price">item: <span><?php if (isset($_SESSION["total"])) echo "$".number_format($_SESSION["total"], 2); ?></span></div>
                     </div>
                 </div>
             </div>
@@ -150,6 +151,7 @@ if(isset($_SESSION['email'])) {
                             <span>Categories</span>
                         </div>
                         <ul class="categories-list">
+                            <li><a href="shop-grid.php">All</a></li>
                             <?php
                             $c=0;
                             $res=$pdo->query("SELECT category_name FROM category");
