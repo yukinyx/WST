@@ -39,7 +39,7 @@ body {
                         <div class="billed"><span class="font-weight-bold text-uppercase">Order ID:</span><span class="ml-1">#<?php echo rand(1223,8371); ?></span></div>
                     </div>
                     <div class="col-md-6 text-right mt-3">
-                        <h4 style="color:green !important;" class="text-danger mb-0">RedMarket</h4><span>g.batstate-u.edu.ph</span>
+                        <h4 style="color:red !important;" class="text-danger mb-0">RedMarket</h4><span>g.batstate-u.edu.ph</span>
                     </div>
                 </div>
                 <div class="mt-3">
@@ -54,7 +54,6 @@ body {
                                 </tr>
                             </thead>
                             <?php
-                            // If the order was just created, we saved the items in session['last_order_items'] before clearing the cart.
                             $runningTotal = 0.0;
                             if (isset($_SESSION['last_order_items']) && is_array($_SESSION['last_order_items'])) {
                                 foreach ($_SESSION['last_order_items'] as $it) {
@@ -73,8 +72,7 @@ body {
                                 </tr>
                             </tbody>
                             <?php }
-                            } else {
-                                // Fallback: if session items are missing, attempt to read shopping_cart (may be empty)
+                            } else { 
                                 $res = $pdo->prepare("SELECT sc.product_name, COALESCE(sc.quantity,1) AS quantity, p.product_price FROM shopping_cart sc JOIN product p ON sc.product_name = p.product_name WHERE sc.user_email = ?");
                                 $res->execute([$_SESSION["email"]]);
                                 while ($row = $res->fetch()) {
@@ -114,7 +112,6 @@ body {
 </div>
 <?php
     if(isset($_POST["check-out"])) {
-        // Clear session-held last order items and total then redirect home
         if (isset($_SESSION['last_order_items'])) {
             unset($_SESSION['last_order_items']);
         }

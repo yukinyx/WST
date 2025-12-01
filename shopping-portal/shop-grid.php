@@ -68,28 +68,30 @@ if(isset($_SESSION['email'])) {
 </style>
 
 <body>
+       <!-- Header Section Begin -->
     <header class="header" id="myHeader">
+
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-3 col-md-3">
-                    <div class="header__logo">
-                        <a href="./index.php">
-                            <img id="headerLogo" src="img/logo.png" alt="logo" class="img-fluid" style="max-width: 180px; height: auto; transition: all 0.3s;">
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <nav class="header__menu">
-                        <ul>
-                            <li><a href="./index.php">Home</a></li>
-                            <li class="active"><a href="./shop-grid.php">Shop</a></li>
-                            <li><a href="./shoping-cart.php">Shopping Cart</a></li>
-                            <li><a href="./contact.php">Contact</a></li>
-                        </ul>
-                    </nav>
-                </div>
-                <div class="col-lg-3 col-md-3">
-                    <div class="header__cart">
+                <div class="col-lg-2 col-md-1">
+    <div class="header__logo" >
+        <a href="./index.php">
+            <img id="headerLogo" src="img/logo.png" alt="logo" class="img-fluid" style="max-width: 180px; height: auto; transition: all 0.3s;">
+        </a>
+    </div>
+</div>
+<div class="col-lg-8 col-md-8 text-center">
+    <nav class="header__menu">
+        <ul>
+            <li class="active"><a href="./index.php" style="font-size: 20px;">Home</a></li>
+            <li><a href="./shop-grid.php" style="font-size: 20px;">Shop</a></li>
+            <li><a href="./shoping-cart.php" style="font-size: 20px;">Shopping Cart</a></li>
+            <li><a href="./contact.php" style="font-size: 20px;">Contact</a></li>
+        </ul>
+    </nav>
+</div>
+<div class="col-lg-2 col-md-2">
+    <div class="header__cart">
                         <ul>
                             <!-- Normal view Cart -->
                             <li><a href="shoping-cart.php"><i class="fa fa-shopping-bag"></i></a><div class="header__cart__price" style= margin-left:.5em;>: <span><?php if (isset($_SESSION["total"])) echo "$".number_format($_SESSION["total"], 2); ?></span></div></li>
@@ -108,21 +110,27 @@ if(isset($_SESSION['email'])) {
                     </div>
                 </div>
             </div>
-            <div class="humberger__open">
-                <i class="fa fa-bars"></i>
-            </div>
         </div>
 
+        <!-- MOBILE STICKY TOP BAR (Hidden by default, shown via CSS when sticky) -->
         <div class="mobile-sticky-top-bar">
+            <!-- Search Bar (Left) -->
             <div class="search-wrapper">
                 <form action="shop-grid.php" method="GET">
                     <input type="text" name="search" placeholder="Search products...">
                     <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
             </div>
+            <!-- Right Side Icons -->
             <div class="icons-wrapper">
-                <a href="shoping-cart.php"><i class="fa fa-shopping-bag"></i><span class="qty-badge"><?php echo isset($_SESSION['cart_count']) ? $_SESSION['cart_count'] : ''; ?></span></a>
-                <a href="contact.php"><i class="fa fa-envelope"></i></a>
+                <!-- Cart -->
+                <a href="shoping-cart.php">
+                    <i class="fa fa-shopping-bag"></i>
+                </a>
+                <!-- Contact -->
+                <a href="contact.php">
+                    <i class="fa fa-envelope"></i>
+                </a>
             </div>
         </div>
     </header>

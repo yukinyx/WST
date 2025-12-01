@@ -1,9 +1,25 @@
 <?php
 include "check_ath.php";
 ?>
+<?php include "lib/functions.php";
+$pdo = get_connection();
+
+$profile_img_header = 'img/default-user.png'; 
+if(isset($_SESSION['email'])) {
+    $uStmt = $pdo->prepare("SELECT IMG_URL FROM user WHERE email = ?");
+    $uStmt->execute([$_SESSION['email']]);
+    $uRow = $uStmt->fetch();
+    if($uRow && !empty($uRow['IMG_URL'])) {
+        $profile_img_header = $uRow['IMG_URL'];
+    }
+}
+?>
 <?php include "./template/top.php"; ?>
 <style>
     /* --- MOBILE BOTTOM NAV --- */
+    .header-profile-img {
+        width: 30px; height: 30px; border-radius: 50%; object-fit: cover;
+    }
     .mobile-bottom-nav {
         display: none; position: fixed; bottom: 0; left: 0; width: 100%;
         background: #ffffff; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 99999;
@@ -55,51 +71,47 @@ include "check_ath.php";
     @keyframes fadeInDown { from { opacity: 0; transform: translate3d(0, -100%, 0); } to { opacity: 1; transform: none; } }
 </style>
 <body>
+       <!-- Header Section Begin -->
     <header class="header" id="myHeader">
+
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-3 col-md-3">
-                    <div class="header__logo">
-                        <a href="./index.php">
-                            <img id="headerLogo" src="img/logo.png" alt="logo" class="img-fluid" style="max-width: 180px; height: auto; transition: all 0.3s;">
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <nav class="header__menu">
+                <div class="col-lg-2 col-md-1">
+    <div class="header__logo" >
+        <a href="./index.php">
+            <img id="headerLogo" src="img/logo.png" alt="logo" class="img-fluid" style="max-width: 180px; height: auto; transition: all 0.3s;">
+        </a>
+    </div>
+</div>
+<div class="col-lg-8 col-md-8 text-center">
+    <nav class="header__menu">
+        <ul>
+            <li class="active"><a href="./index.php" style="font-size: 1.2rem;">Home</a></li>
+            <li><a href="./shop-grid.php" style="font-size: 1.2rem;">Shop</a></li>
+            <li><a href="./shoping-cart.php" style="font-size: 1.2rem;">Shopping Cart</a></li>
+            <li><a href="./contact.php" style="font-size: 1.2rem;">Contact</a></li>
+        </ul>
+    </nav>
+</div>
+<div class="col-lg-2 col-md-2">
+    <div class="header__cart">
                         <ul>
-                            <li><a href="./index.php">Home</a></li>
-                            <li><a href="./shop-grid.php">Shop</a></li>
-                            <li><a href="./shoping-cart.php">Shopping Cart</a></li>
-                            <li class="active"><a href="./contact.php">Contact</a></li>
-                        </ul>
-                    </nav>
-                </div>
-                <div class="col-lg-3 col-md-3">
-                    <div class="header__cart">
-                        <ul>
+                            <!-- Normal view Cart -->
                             <li><a href="shoping-cart.php"><i class="fa fa-shopping-bag"></i></a><div class="header__cart__price" style= margin-left:.5em;>: <span><?php if (isset($_SESSION["total"])) echo "$".number_format($_SESSION["total"], 2); ?></span></div></li>
-                            <li><a href="./profile.php"><i class="fa fa-user"></i></a></li>
+                            
+                            <!-- Profile Icon (Desktop/Normal View) -->
+                            <li>
+                                <a href="./profile.php">
+                                    <?php if(isset($_SESSION['email'])): ?>
+                                        <img src="<?php echo $profile_img_header; ?>" class="header-profile-img" alt="Profile">
+                                    <?php else: ?>
+                                        <i class="fa fa-user"></i>
+                                    <?php endif; ?>
+                                </a>
+                            </li>
                         </ul>
-                        
                     </div>
                 </div>
-            </div>
-            <div class="humberger__open">
-                <i class="fa fa-bars"></i>
-            </div>
-        </div>
-
-        <div class="mobile-sticky-top-bar">
-            <div class="search-wrapper">
-                <form action="shop-grid.php" method="GET">
-                    <input type="text" name="search" placeholder="Search products...">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
-            </div>
-            <div class="icons-wrapper">
-                <a href="shoping-cart.php"><i class="fa fa-shopping-bag"></i><span class="qty-badge"><?php echo isset($_SESSION['cart_count']) ? $_SESSION['cart_count'] : ''; ?></span></a>
-                <a href="contact.php"><i class="fa fa-envelope"></i></a>
             </div>
         </div>
     </header>
