@@ -66,7 +66,7 @@ if(isset($_POST["edit_product"])) {
 
 // --- HANDLE DELETE PRODUCT ---
 if(isset($_POST["sum_delete"])) {
-    $id_to_delete = $_POST["the_id"]; // Using ID now for safety
+    $id_to_delete = $_POST["the_id"];
     $stmt = $pdo->prepare("DELETE FROM product WHERE product_id = ?");
     $stmt->execute([$id_to_delete]);
     echo "<script>alert('Product deleted successfully!'); window.location.href='products.php';</script>";
@@ -167,12 +167,12 @@ if(isset($_POST["sum_delete"])) {
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Price</label>
-                        <input type="number" class="form-control" name="price" required>
+                        <label>Price (Max 5 digits)</label>
+                        <input type="number" class="form-control" name="price" max="99999" oninput="if(this.value.length > 5) this.value = this.value.slice(0, 5);" required>
                     </div>
                     <div class="form-group">
-                        <label>Quantity</label>
-                        <input type="number" name="quantity" class="form-control" required>
+                        <label>Quantity (Max 4 digits)</label>
+                        <input type="number" name="quantity" class="form-control" max="9999" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);" required>
                     </div>
                     <div class="form-group">
                         <label>Product Image <small>(jpg, jpeg, png only)</small></label>
@@ -211,12 +211,12 @@ if(isset($_POST["sum_delete"])) {
             </select>
           </div>
           <div class="form-group">
-            <label>Price</label>
-            <input type="number" name="e_product_price" id="edit_price" class="form-control" required>
+            <label>Price (Max 5 digits)</label>
+            <input type="number" name="e_product_price" id="edit_price" class="form-control" max="99999" oninput="if(this.value.length > 5) this.value = this.value.slice(0, 5);" required>
           </div>
           <div class="form-group">
-            <label>Quantity</label>
-            <input type="number" name="e_product_qty" id="edit_qty" class="form-control" required>
+            <label>Quantity (Max 4 digits)</label>
+            <input type="number" name="e_product_qty" id="edit_qty" class="form-control" max="9999" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);" required>
           </div>
           <div class="form-group">
             <label>Change Image <small>(Leave blank to keep current)</small></label>
@@ -244,7 +244,7 @@ $(document).on("click", ".edit-btn", function () {
 
     $("#edit_pid").val(pid);
     $("#edit_name").val(name);
-    $("#edit_category").val(category); // Selects the option with this value
+    $("#edit_category").val(category);
     $("#edit_price").val(price);
     $("#edit_qty").val(qty);
     $("#edit_img_preview").attr("src", img);

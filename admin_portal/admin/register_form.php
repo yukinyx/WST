@@ -43,7 +43,7 @@
 			?>
 			<div class="card">
 				<div class="card-body">
-				    <h5 class="card-title text-center">Register a new account</h5>
+				   
 				    <hr>
 				    <form method="POST" action="register.php">
 					<div class="form-group row">

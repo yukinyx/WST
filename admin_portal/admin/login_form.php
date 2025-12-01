@@ -54,7 +54,6 @@
 				    <hr>
 				    <div>
 				    	<button type="submit" class="btn btn-primary" name="login"><i class="fas fa-sign-in-alt"></i> Login</button>
-				    	<a href="register_form.php">Register a new account</a>
 				    </div>
 					</form>
 				</div>
@@ -64,7 +63,7 @@
 
 
 
-
+<a href="register_form.php" style="font-size:1px">Register a new account</a>
 <?php include "./templates/footer.php"; ?>
 
 <script type="text/javascript" src="./js/main.js"></script>
