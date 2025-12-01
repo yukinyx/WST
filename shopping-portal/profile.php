@@ -59,14 +59,6 @@ if(isset($_POST["save"])){
     exit;
 }
 
-// 3. Handle Account Deactivation
-if(isset($_POST['deactivate'])){
-    $stmt=$pdo->prepare('DELETE FROM user WHERE email = ?');
-    $stmt->execute([$email]);
-    header('location:logout.php');
-    exit;
-}
-
 // 4. Handle Cancel
 if(isset($_POST['cancel'])){
     header('location:index.php');
@@ -266,29 +258,9 @@ $profileImage = !empty($row["IMG_URL"]) ? $row["IMG_URL"] : 'img/default-user.pn
                         <button type="submit" class="btn btn-primary" name="save">Save Changes</button>
                         <button type="submit" name="cancel" class="btn btn-light ml-2">Cancel</button>
                     </div>
-                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deactivateModal">Deactivate Account</button>
                 </div>
                 
-                <!-- Deactivate Modal Confirmation -->
-                <div class="modal fade" id="deactivateModal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Confirm Deactivation</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Are you sure you want to deactivate your account? This action cannot be undone.</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <button type="submit" name="deactivate" class="btn btn-danger">Yes, Deactivate</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+               
 
             </form>
         </div>
