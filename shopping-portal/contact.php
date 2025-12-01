@@ -17,6 +17,20 @@ if(isset($_SESSION['email'])) {
 <?php include "./template/top.php"; ?>
 <style>
     /* --- MOBILE BOTTOM NAV --- */
+    .header__top,
+    .header__menu, 
+    .header__cart { 
+        display: none !important; 
+    }
+
+    .breadcrumb-section .breadcrumb__text h2 {
+        font-size: 20px;
+    }
+
+    .breadcrumb-section {
+        padding: 20px 0 20px 0;
+    }
+    
     .header-profile-img {
         width: 30px; height: 30px; border-radius: 50%; object-fit: cover;
     }
@@ -30,7 +44,7 @@ if(isset($_SESSION['email'])) {
         color: #1c1c1c; font-size: 10px; font-weight: 600; text-transform: uppercase; width: 20%;
     }
     .mobile-bottom-nav .nav-item i { font-size: 18px; margin-bottom: 4px; color: #666; transition: 0.3s; }
-    .mobile-bottom-nav .nav-item.active i, .mobile-bottom-nav .nav-item:hover i { color: #7fad39; }
+    .mobile-bottom-nav .nav-item.active i, .mobile-bottom-nav .nav-item:hover i { color: #9c340bff; }
 
     /* --- MOBILE TOP STICKY BAR --- */
     .mobile-sticky-top-bar {

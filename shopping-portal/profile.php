@@ -196,7 +196,7 @@ $profileImage = !empty($row["IMG_URL"]) ? $row["IMG_URL"] : 'img/default-user.pn
             width: 20%;
         }
         .mobile-bottom-nav .nav-item i { font-size: 18px; margin-bottom: 4px; color: #666; transition: 0.3s; }
-        .mobile-bottom-nav .nav-item.active i, .mobile-bottom-nav .nav-item:hover i { color: #7fad39; }
+        .mobile-bottom-nav .nav-item.active i, .mobile-bottom-nav .nav-item:hover i { color: #9c340bff; }
         
         @media (max-width: 767px) {
             .mobile-bottom-nav { display: flex; }

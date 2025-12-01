@@ -19,6 +19,20 @@ if(isset($_SESSION['email'])) {
     .header-profile-img {
         width: 30px; height: 30px; border-radius: 50%; object-fit: cover;
     }
+    .header__top,
+    .header__menu, 
+    .header__cart { 
+        display: none !important; 
+    }
+
+    .breadcrumb-section .breadcrumb__text h2 {
+        font-size: 20px;
+    }
+
+    .breadcrumb-section {
+        padding: 20px 0 20px 0;
+    }
+    
     .mobile-bottom-nav {
         display: none; 
         position: fixed;
