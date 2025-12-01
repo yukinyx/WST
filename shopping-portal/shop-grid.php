@@ -83,10 +83,10 @@ if(isset($_SESSION['email'])) {
 <div class="col-lg-8 col-md-8 text-center">
     <nav class="header__menu">
         <ul>
-            <li><a href="./index.php" style="font-size: 20px;">Home</a></li>
-            <li class="active"><a href="./shop-grid.php" style="font-size: 20px;">Shop</a></li>
-            <li><a href="./shoping-cart.php" style="font-size: 20px;">Shopping Cart</a></li>
-            <li><a href="./contact.php" style="font-size: 20px;">Contact</a></li>
+            <li><a href="./index.php">Home</a></li>
+            <li class="active"><a href="./shop-grid.php" >Shop</a></li>
+            <li><a href="./shoping-cart.php" >Shopping Cart</a></li>
+            <li><a href="./contact.php" >Contact</a></li>
         </ul>
     </nav>
 </div>
