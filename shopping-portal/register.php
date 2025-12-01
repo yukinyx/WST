@@ -1,56 +1,75 @@
 <?php
-session_start();
-include "lib/functions.php";
-$pdo = get_connection();
+	//start PHP session
+	session_start();
+	
+	//check if register form is submitted
+	if(isset($_POST['register'])){
+		//assign variables to post values
+		$email = $_POST['email'];
+		$password = $_POST['password'];
+		$confirm = $_POST['confirm'];
+		$customerName = $_POST['username'];
+		$phoneNo = $_POST['phoneNo'];
 
-if (isset($_POST["register"])) {
-    $username = $_POST["username"];
-    $email = $_POST["email"];
-    $password = $_POST["password"];
-    $cpassword = $_POST["cpassword"];
-    $phone_number = $_POST["phone_number"];
+ 
+		//check if password matches confirm password
+		if($password != $confirm){
+			//return the values to the user
+			$_SESSION['email'] = $email;
+			$_SESSION['password'] = $password;
+			$_SESSION['confirm'] = $confirm;
+			$_SESSION['username']= $customerName;
+			$_SESSION['phoneNo']= $phoneNo;
 
-    // 1. Email Domain Validation
-    $allowed_domain = '@g.batstate-u.edu.ph';
-    // Check if email ends with the allowed domain
-    if (substr($email, -strlen($allowed_domain)) !== $allowed_domain) {
-        ?>
-        <script>
-            alert("Registration restricted. You must use a <?php echo $allowed_domain; ?> email address.");
-            window.location.href = "register_form.php"; // Redirect back to login/register
-        </script>
-        <?php
-        exit(); // Stop execution
-    }
+			//display error
+			$_SESSION['error'] = 'Passwords did not match';
+		}
+		else{
+			//include our database connection
+			include 'lib\functions.php';
+			$pdo = get_connection();
+ 
+			//check if the email is already taken
+			$stmt = $pdo->prepare('SELECT * FROM user WHERE email = :email');
+			$stmt->execute(['email' => $email]);
+ 
+			if($stmt->rowCount() > 0){
+				//return the values to the user
+				$_SESSION['username']= $customerName;
+				$_SESSION['email'] = $email;
+				$_SESSION['password'] = $password;
+				$_SESSION['confirm'] = $confirm;
+				$_SESSION['phoneNo']= $phoneNo;
 
-    // 2. Password Match Validation
-    if ($password != $cpassword) {
-        echo '<script>alert("Passwords do not match!")</script>';
-    } else {
-        // 3. Check if email already exists
-        $stmt = $pdo->prepare("SELECT * FROM user WHERE email = ?");
-        $stmt->execute([$email]);
-        $count = $stmt->rowCount();
-
-        if ($count > 0) {
-            ?>
-            <script type="text/javascript">
-                alert("The Email Address is already taken.");
-            </script>
-            <?php
-        } else {
-            // 4. Insert User
-            $stmt = $pdo->prepare("INSERT INTO user(customerName, email, password, phone_number) VALUES (?, ?, ?, ?)");
-            if ($stmt->execute([$username, $email, $password, $phone_number])) {
-                ?>
-                <script type="text/javascript">
-                    alert("Registration Successful! Please Login.");
-                    window.location.href = "login.php";
-                </script>
-                <?php
-            }
-        }
-    }
-}
-header('location: register_form.php');
+ 
+				//display error
+				$_SESSION['error'] = 'Email already taken';
+			}
+			else{
+				//encrypt password using password_hash()
+				$password = password_hash($password, PASSWORD_DEFAULT);
+ 
+				//insert new user to our database
+				$stmt = $pdo->prepare('INSERT INTO user (email, password,customerName,phone_number,role) VALUES (:email, :password,:username,:phoneNo,:role)');
+ 
+				try{
+                    $role="customer";
+					$stmt->execute(['email' => $email, 'password' => $password,'username'=>$customerName , 'phoneNo' => $phoneNo,'role'=>$role]);
+ 
+					$_SESSION['success'] = 'User verified. You can <a href="login.php">login</a> now';
+				}
+				catch(PDOException $e){
+					$_SESSION['error'] = $e->getMessage();
+				}
+ 
+			}
+ 
+		}
+ 
+	}
+	else{
+		$_SESSION['error'] = 'Fill up registration form first';
+	}
+ 
+	header('location: register_form.php');
 ?>
