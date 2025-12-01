@@ -118,10 +118,7 @@ if(isset($_SESSION['email'])) {
                 <div class="col-lg-12 text-center">
                     <div class="breadcrumb__text">
                         <h2>Shopping Cart</h2>
-                        <div class="breadcrumb__option">
-                            <a href="./index.php">Home</a>
-                            <span>Shopping Cart</span>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -198,8 +195,7 @@ if(isset($_SESSION['email'])) {
                         </table>
                     </div>
                     <div class="shoping__cart__btns">
-                        <button type="submit" name="update_cart" class="primary-btn cart-btn cart-btn-right">Update Cart</button>
-                        <a href="index.php" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
+                        <a href="shop-grid.php" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
                     </div>
                 </div>
             </div>

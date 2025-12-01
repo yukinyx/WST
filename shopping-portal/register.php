@@ -11,7 +11,21 @@
 		$customerName = $_POST['username'];
 		$phoneNo = $_POST['phoneNo'];
 
- 
+		$allowed_domain = 'g.batstate-u.edu.ph';
+    
+    // Get the domain part of the email (everything after @)
+    $email_parts = explode('@', $email);
+    $domain_part = end($email_parts);
+
+    // Compare lowercase versions to ensure case-insensitivity
+    if (strtolower($domain_part) !== $allowed_domain) {
+        
+        
+    $_SESSION['error'] = 'You must use a valid @g.batstate-u.edu.ph email address.';
+    header('location: register_form.php');
+	exit();     
+    }
+	
 		//check if password matches confirm password
 		if($password != $confirm){
 			//return the values to the user

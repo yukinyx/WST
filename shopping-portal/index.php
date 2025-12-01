@@ -315,7 +315,7 @@ $pdo = get_connection();
                             <?php if ($catValue !== ''): ?>
                           
                             <?php endif; ?>
-                            <h6><a href="#"><?php echo htmlspecialchars($row["product_name"], ENT_QUOTES, 'UTF-8'); ?></a></h6>
+                            <h6><?php echo htmlspecialchars($row["product_name"], ENT_QUOTES, 'UTF-8'); ?></h6>
                             <h5>$<?php echo htmlspecialchars($row["product_price"], ENT_QUOTES, 'UTF-8'); ?></h5>
                         </div>
                     </div>

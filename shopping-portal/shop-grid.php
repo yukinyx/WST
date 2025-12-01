@@ -179,21 +179,7 @@ if(isset($_SESSION['email'])) {
    <section class="product spad">
         <div class="container">
             <div class="row">
-                <div class="col-lg-3 col-md-5">
-                    <div class="sidebar">
-                        <div class="sidebar__item">
-                            <h4>Department</h4>
-                            <ul>
-                            <?php
-                            $res=$pdo->query("SELECT category_name FROM category");
-                            while($row = $res->fetch()){
-                                ?>
-                            <li><a href="shop-grid.php?category=<?php echo urlencode($row['category_name']); ?>"><?php echo $row["category_name"]; ?></a></li>
-                            <?php } ?>
-                        </ul>
-                        </div>
-                    </div>
-                </div>
+                
                 <div class="col-lg-9 col-md-7">
                     <div class="row">
 					    <?php

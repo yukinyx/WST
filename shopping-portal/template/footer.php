@@ -15,12 +15,10 @@
                         <ul>
                             <li><a href="#">About Us</a></li>
                             <li><a href="#">About Our Shop</a></li>
-                            <li><a href="#">Delivery infomation</a></li>
                             <li><a href="#">Privacy Policy</a></li>
                         </ul>
                         <ul>
                             <li><a href="#">Who We Are</a></li>
-                            <li><a href="#">Our Services</a></li>
                             <li><a href="#">Contact</a></li>
                         </ul>
                     </div>
