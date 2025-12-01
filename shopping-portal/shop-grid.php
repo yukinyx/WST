@@ -1,47 +1,38 @@
 <?php
 include "check_ath.php";
+include "lib/functions.php";
+$pdo = get_connection();
+
+// Fetch User Image for Header
+$profile_img_header = 'img/logo.png'; // Default fallback
+if(isset($_SESSION['email'])) {
+    $uStmt = $pdo->prepare("SELECT IMG_URL FROM user WHERE email = ?");
+    $uStmt->execute([$_SESSION['email']]);
+    $uRow = $uStmt->fetch();
+    if($uRow && !empty($uRow['IMG_URL'])) {
+        $profile_img_header = $uRow['IMG_URL'];
+    } else {
+        $profile_img_header = "img/default-user.png"; // Fallback if logged in but no image
+    }
+}
 ?>
 <?php include "./template/top.php"; ?>
-<?php include "lib/functions.php";
-$pdo = get_connection();
-?>
 <style>
-    /* --- MOBILE BOTTOM NAV --- */
+    /* Mobile Styles from previous request */
     .mobile-bottom-nav {
-        display: none;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background: #ffffff;
-        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-        z-index: 99999;
-        justify-content: space-around;
-        padding: 10px 0;
-        border-top: 1px solid #e1e1e1;
+        display: none; position: fixed; bottom: 0; left: 0; width: 100%;
+        background: #ffffff; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 99999;
+        justify-content: space-around; padding: 10px 0; border-top: 1px solid #e1e1e1;
     }
     .mobile-bottom-nav .nav-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-decoration: none;
-        color: #1c1c1c;
-        font-size: 10px;
-        font-weight: 600;
-        text-transform: uppercase;
-        width: 20%;
+        display: flex; flex-direction: column; align-items: center; text-decoration: none;
+        color: #1c1c1c; font-size: 10px; font-weight: 600; text-transform: uppercase; width: 20%;
     }
     .mobile-bottom-nav .nav-item i { font-size: 18px; margin-bottom: 4px; color: #666; transition: 0.3s; }
     .mobile-bottom-nav .nav-item.active i, .mobile-bottom-nav .nav-item:hover i { color: #7fad39; }
-
-    /* --- MOBILE TOP STICKY BAR --- */
     .mobile-sticky-top-bar {
-        display: none;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 15px;
-        background: #fff;
-        width: 100%;
+        display: none; align-items: center; justify-content: space-between;
+        padding: 10px 15px; background: #fff; width: 100%;
     }
     .mobile-sticky-top-bar .search-wrapper { flex-grow: 1; margin-right: 15px; }
     .mobile-sticky-top-bar form { display: flex; width: 100%; position: relative; }
@@ -55,13 +46,6 @@ $pdo = get_connection();
     }
     .mobile-sticky-top-bar .icons-wrapper { display: flex; align-items: center; gap: 15px; }
     .mobile-sticky-top-bar .icons-wrapper a { position: relative; color: #1c1c1c; font-size: 20px; }
-    .mobile-sticky-top-bar .qty-badge {
-        position: absolute; top: -5px; right: -8px; background: #7fad39;
-        color: #fff; font-size: 9px; height: 15px; width: 15px;
-        line-height: 15px; text-align: center; border-radius: 50%; font-weight: bold;
-    }
-
-    /* --- STICKY & RESPONSIVE --- */
     .sticky { position: fixed; top: 0; width: 100%; background: #ffffff; z-index: 9990; box-shadow: 0 5px 10px rgba(0,0,0,0.1); animation: fadeInDown 0.5s; }
     @media (max-width: 991px) { .hero__search__phone { display: none !important; } }
     @media (max-width: 767px) {
@@ -75,6 +59,12 @@ $pdo = get_connection();
         .header.sticky .mobile-sticky-top-bar { display: flex !important; }
     }
     @keyframes fadeInDown { from { opacity: 0; transform: translate3d(0, -100%, 0); } to { opacity: 1; transform: none; } }
+    
+    /* Profile Image in Header Style */
+    .header-profile-img {
+        width: 20px; height: 20px; border-radius: 50%; object-fit: cover;
+        border: 1px solid #ddd; margin-right: 0; vertical-align: middle;
+    }
 </style>
 
 <body>
@@ -102,7 +92,16 @@ $pdo = get_connection();
                     <div class="header__cart">
                         <ul>
                             <li><a href="shoping-cart.php"><i class="fa fa-shopping-bag"></i> <span><?php echo isset($_SESSION['cart_count']) ? $_SESSION['cart_count'] : ''; ?></span></a></li>
-                            <li><a href="./profile.php"><i class="fa fa-user"></i></a></li>
+                            <li>
+                                <a href="./profile.php">
+                                    <!-- Logic to show profile image instead of icon if available -->
+                                    <?php if(strpos($profile_img_header, 'default-user') === false && strpos($profile_img_header, 'logo.png') === false): ?>
+                                        <img src="<?php echo $profile_img_header; ?>" class="header-profile-img" alt="Profile">
+                                    <?php else: ?>
+                                        <i class="fa fa-user"></i>
+                                    <?php endif; ?>
+                                </a>
+                            </li>
                         </ul>
                         <div class="header__cart__price">item: <span><?php if (isset($_SESSION["total"])) echo "$".number_format($_SESSION["total"], 2); ?></span></div>
                     </div>
@@ -126,6 +125,20 @@ $pdo = get_connection();
             </div>
         </div>
     </header>
+
+    <!-- MOVED: Breadcrumb Section is now BEFORE the Hero Section -->
+    <section class="breadcrumb-section set-bg" data-setbg="img/batstateu-banner.png" style="margin-bottom: 20px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <h2>Redmarket</h2>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     
     <section class="hero hero-normal">
         <div class="container">
@@ -169,26 +182,13 @@ $pdo = get_connection();
         </div>
     </section>
   
-    <section class="breadcrumb-section set-bg" data-setbg="img/batstateu-banner.png">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <div class="breadcrumb__text">
-                        <h2>Redmarket</h2>
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
     <section class="product spad">
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-5">
                     <div class="sidebar">
                         <div class="sidebar__item">
-                            <h4>Categories</h4>
+                            <h4>Department</h4>
                             <ul>
                             <?php
                             $c=0;
@@ -199,7 +199,7 @@ $pdo = get_connection();
                             <?php $c=$c+1; } ?>
                         </ul>
                         </div>
-                        
+                       
                     </div>
                 </div>
                 <div class="col-lg-9 col-md-7">
@@ -257,7 +257,8 @@ $pdo = get_connection();
             </div>
         </div>
     </section>
-
+    
+    <!-- MOBILE BOTTOM NAV -->
     <div class="mobile-bottom-nav">
         <a href="./index.php" class="nav-item">
             <i class="fa fa-home"></i>
