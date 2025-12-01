@@ -84,9 +84,9 @@ if(isset($_SESSION['email'])) {
 <div class="col-lg-8 col-md-8 text-center">
     <nav class="header__menu">
         <ul>
-            <li class="active"><a href="./index.php" style="font-size: 1.2rem;">Home</a></li>
+            <li><a href="./index.php" style="font-size: 1.2rem;">Home</a></li>
             <li><a href="./shop-grid.php" style="font-size: 1.2rem;">Shop</a></li>
-            <li><a href="./shoping-cart.php" style="font-size: 1.2rem;">Shopping Cart</a></li>
+            <li class="active"><a href="./shoping-cart.php" style="font-size: 1.2rem;">Shopping Cart</a></li>
             <li><a href="./contact.php" style="font-size: 1.2rem;">Contact</a></li>
         </ul>
     </nav>
