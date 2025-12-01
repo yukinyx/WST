@@ -17,22 +17,8 @@ if(isset($_SESSION['email'])) {
 <?php include "./template/top.php"; ?>
 <style>
     /* --- MOBILE BOTTOM NAV --- */
-    .header__top,
-    .header__menu, 
-    .header__cart { 
-        display: none !important; 
-    }
-
-    .breadcrumb-section .breadcrumb__text h2 {
-        font-size: 20px;
-    }
-
-    .breadcrumb-section {
-        padding: 20px 0 20px 0;
-    }
-    
     .header-profile-img {
-        width: 30px; height: 30px; border-radius: 50%; object-fit: cover;
+        width: 20px; height: 20px; border-radius: 50%; object-fit: cover;
     }
     .mobile-bottom-nav {
         display: none; position: fixed; bottom: 0; left: 0; width: 100%;
@@ -76,6 +62,19 @@ if(isset($_SESSION['email'])) {
         .header__logo { text-align: center; margin-bottom: 10px; }
         .header__cart { text-align: center; padding: 10px 0; }
         .humberger__open { left: 15px; top: 25px; }
+        .header__top,
+    .header__menu, 
+    .header__cart { 
+        display: none !important; 
+    }
+
+    .breadcrumb-section .breadcrumb__text h2 {
+        font-size: 20px;
+    }
+
+    .breadcrumb-section {
+        padding: 20px 0 20px 0;
+    }
         .mobile-bottom-nav { display: flex; }
         body { padding-bottom: 70px; }
         .header.sticky { padding: 0; }

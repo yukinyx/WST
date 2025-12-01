@@ -275,41 +275,66 @@ if(isset($_SESSION['email'])) {
 </html>
 <?php
 if(isset($_POST["add_to_cart"])) {
-    $count =0;
-    $x_value=$_POST["the_id"];
+    $x_value = $_POST["the_id"];
     
     // Capture Quantity
     $qty = isset($_POST['quantity']) && is_numeric($_POST['quantity']) && $_POST['quantity'] > 0 ? (int)$_POST['quantity'] : 1;
 
-    // Check DB for Quantity Column
-    $hasQtyCol = false;
-    try {
-        $colCheck = $pdo->query("SHOW COLUMNS FROM shopping_cart LIKE 'quantity'");
-        if ($colCheck && $colCheck->rowCount() > 0) $hasQtyCol = true;
-    } catch (Exception $e) { $hasQtyCol = false; }
+    // [MODIFICATION]: Fetch Product Stock Limit
+    $stockStmt = $pdo->prepare("SELECT quantity FROM product WHERE product_name = ?");
+    $stockStmt->execute([$x_value]);
+    $stockRow = $stockStmt->fetch();
+    $maxStock = $stockRow ? (int)$stockRow['quantity'] : 0;
 
+    // Check if item exists in cart
     $res = $pdo->prepare("SELECT * FROM shopping_cart where product_name=? and user_email=? ");
-    $res ->execute([$x_value,$_SESSION["email"]]);
-    $count =$res->rowCount();
+    $res->execute([$x_value, $_SESSION["email"]]);
+    $existingItem = $res->fetch();
+    $count = $res->rowCount();
 
-    if($count > 0) {
-        // UPDATE
-        if ($hasQtyCol) {
-            $update = $pdo->prepare("UPDATE shopping_cart SET quantity = quantity + ? WHERE product_name = ? AND user_email = ?");
-            $update->execute([$qty, $x_value, $_SESSION['email']]);
-        }
-    } else {
-        // INSERT
-        if ($hasQtyCol) {
-            $stmt = $pdo->prepare("INSERT INTO shopping_cart (product_name,user_email,quantity) VALUES (?,?,?)");
-            $stmt->execute([$x_value, $_SESSION["email"], $qty]);
+    // Calculate current quantity in cart
+    $currentCartQty = ($existingItem && isset($existingItem['quantity'])) ? (int)$existingItem['quantity'] : 0;
+    
+    // Determine how much we can actually add
+    $totalProposed = $currentCartQty + $qty;
+    $qtyToAdd = $qty;
+
+    if ($totalProposed > $maxStock) {
+        $qtyToAdd = $maxStock - $currentCartQty;
+        // If cart already has max stock, we add 0
+        if ($qtyToAdd < 0) $qtyToAdd = 0;
+        
+        // Optional: Trigger an alert that max stock is reached (handled via JS below if you wish)
+        echo "<script>alert('Cannot add full quantity. Stock limit is $maxStock.');</script>";
+    }
+
+    if ($qtyToAdd > 0) {
+        // Check DB for Quantity Column existence
+        $hasQtyCol = false;
+        try {
+            $colCheck = $pdo->query("SHOW COLUMNS FROM shopping_cart LIKE 'quantity'");
+            if ($colCheck && $colCheck->rowCount() > 0) $hasQtyCol = true;
+        } catch (Exception $e) { $hasQtyCol = false; }
+
+        if($count > 0) {
+            // UPDATE existing item
+            if ($hasQtyCol) {
+                $update = $pdo->prepare("UPDATE shopping_cart SET quantity = quantity + ? WHERE product_name = ? AND user_email = ?");
+                $update->execute([$qtyToAdd, $x_value, $_SESSION['email']]);
+            }
         } else {
-            $stmt = $pdo->prepare("INSERT INTO shopping_cart (product_name,user_email) value(?,?) ");
-            $stmt->execute([$x_value, $_SESSION["email"]]);
+            // INSERT new item
+            if ($hasQtyCol) {
+                $stmt = $pdo->prepare("INSERT INTO shopping_cart (product_name,user_email,quantity) VALUES (?,?,?)");
+                $stmt->execute([$x_value, $_SESSION["email"], $qtyToAdd]);
+            } else {
+                $stmt = $pdo->prepare("INSERT INTO shopping_cart (product_name,user_email) value(?,?) ");
+                $stmt->execute([$x_value, $_SESSION["email"]]);
+            }
         }
     }
     
-    // --- UPDATED: RECALCULATE CART TOTAL HERE ---
+    // Recalculate Cart Total
     $newTotal = 0;
     $tStmt = $pdo->prepare("SELECT p.product_price, sc.quantity FROM shopping_cart sc JOIN product p ON sc.product_name = p.product_name WHERE sc.user_email = ?");
     $tStmt->execute([$_SESSION['email']]);
@@ -318,7 +343,6 @@ if(isset($_POST["add_to_cart"])) {
         $newTotal += ($row['product_price'] * $q);
     }
     $_SESSION['total'] = $newTotal;
-    // --------------------------------------------
 
     ?>
     <script>
@@ -327,3 +351,4 @@ if(isset($_POST["add_to_cart"])) {
     </script>
     <?php
 }?>
+    

@@ -104,7 +104,12 @@ body {
                     </div>
                 </div>
                 <form method="post" action="">
-                <div class="text-right mb-3"><a href=""><button name="check-out" class="btn btn-danger btn-sm mr-5" type="submit">Home</button></a></div>
+                    <div class="text-right mb-3">
+                        <button type="button" onclick="window.print()" class="btn btn-secondary btn-sm mr-2">
+                            <i class="fa fa-print"></i> Print
+                        </button>
+                        <button name="check-out" class="btn btn-danger btn-sm mr-5" type="submit">Home</button>
+                    </div>
                 </form>
             </div>
         </div>

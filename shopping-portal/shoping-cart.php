@@ -14,6 +14,18 @@ try {
 if ($hasQtyCol && (isset($_POST['update_cart']) || isset($_POST['checkout_trigger'])) && isset($_POST['qty']) && is_array($_POST['qty'])) {
     foreach ($_POST['qty'] as $pname => $q) {
         $qval = is_numeric($q) && $q > 0 ? (int)$q : 1;
+
+        // [MODIFICATION]: Check max stock for each item being updated
+        $stockCheck = $pdo->prepare("SELECT quantity FROM product WHERE product_name = ?");
+        $stockCheck->execute([$pname]);
+        $sRow = $stockCheck->fetch();
+        $limit = $sRow ? (int)$sRow['quantity'] : 0;
+
+        // If user input is higher than stock, cap it at max stock
+        if ($qval > $limit) {
+            $qval = $limit;
+        }
+
         $updateStmt = $pdo->prepare("UPDATE shopping_cart SET quantity = ? WHERE product_name = ? AND user_email = ?");
         $updateStmt->execute([$qval, $pname, $_SESSION['email']]);
     }
