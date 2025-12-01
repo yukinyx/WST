@@ -256,27 +256,27 @@ if(isset($_SESSION['email'])) {
                 <div class="categories__slider owl-carousel">
                     <div class="col-lg-3">
                         <div class="categories__item set-bg" data-setbg="img/categories/cat-1.jpg">
-                            <h5><a href="#">Laces</a></h5>
+                            <h5><a>Laces</a></h5>
                         </div>
                     </div>
                     <div class="col-lg-3">
                         <div class="categories__item set-bg" data-setbg="img/categories/cat-2.jpg">
-                            <h5><a href="#">Pins</a></h5>
+                            <h5><a>Pins</a></h5>
                         </div>
                     </div>
                     <div class="col-lg-3">
                         <div class="categories__item set-bg" data-setbg="img/categories/cat-3.jpg">
-                            <h5><a href="#">Tumblers</a></h5>
+                            <h5><a>Tumblers</a></h5>
                         </div>
                     </div>
                     <div class="col-lg-3">
                         <div class="categories__item set-bg" data-setbg="img/categories/cat-4.jpg">
-                            <h5><a href="#">Notebooks</a></h5>
+                            <h5><a>Notebooks</a></h5>
                         </div>
                     </div>
                     <div class="col-lg-3">
                         <div class="categories__item set-bg" data-setbg="img/categories/cat-5.jpg">
-                            <h5><a href="#">Textiles</a></h5>
+                            <h5><a>Textiles</a></h5>
                         </div>
                     </div>
                 </div>

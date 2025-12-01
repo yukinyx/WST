@@ -8,8 +8,7 @@
 	<script src="font-awesome/fontawesome-all.min.js"></script>
 	<link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/dashboard/">
 
-    <!-- Bootstrap core CSS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
@@ -75,10 +74,15 @@
 						    	<input class="form-control" type="password" id="confirm" name="confirm" value="<?php echo (isset($_SESSION['confirm'])) ? $_SESSION['confirm'] : ''; unset($_SESSION['confirm']) ?>" placeholder="re-type password">
 						  	</div>
 						</div>
-						<div class="form-group row">
+                        <div class="form-group row">
 						  	<label for="phoneNo" class="col-3 col-form-label">Phone_No</label>
 						  	<div class="col-9">
-						    	<input class="form-control" type="Phone" id="phoneNo" name="phoneNo" value="<?php echo (isset($_SESSION['phoneNo'])) ? $_SESSION['phoneNo'] : ''; unset($_SESSION['phoneNo']) ?>" placeholder="Phone Number">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">(+63)</span>
+                                    </div>
+						    	    <input class="form-control" type="text" id="phoneNo" name="phoneNo" maxlength="10" value="<?php echo (isset($_SESSION['phoneNo'])) ? $_SESSION['phoneNo'] : ''; unset($_SESSION['phoneNo']) ?>" placeholder="10-digit Number" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                </div>
 						  	</div>
 						</div>
 						

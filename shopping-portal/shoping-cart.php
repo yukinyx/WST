@@ -54,17 +54,13 @@ if(isset($_SESSION['email'])) {
     .mobile-bottom-nav .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #1c1c1c; font-size: 10px; font-weight: 600; width: 20%; }
     .mobile-bottom-nav .nav-item i { font-size: 18px; margin-bottom: 4px; color: #666; }
     .mobile-bottom-nav .nav-item.active i { color: #7fad39; }
-    .mobile-sticky-top-bar { display: none; align-items: center; justify-content: space-between; padding: 10px 15px; background: #fff; width: 100%; }
     .sticky { position: fixed; top: 0; width: 100%; background: #ffffff; z-index: 9990; box-shadow: 0 5px 10px rgba(0,0,0,0.1); animation: fadeInDown 0.5s; }
     .header-profile-img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; border: 1px solid #ddd; margin-right: 0; vertical-align: middle; }
     @media (max-width: 767px) {
         .header__logo { text-align: center; margin-bottom: 10px; }
-        .header__cart { text-align: center; padding: 10px 0; }
         .mobile-bottom-nav { display: flex; }
         body { padding-bottom: 70px; }
-        .header.sticky { padding: 0; }
-        .header.sticky .header__logo, .header.sticky .header__menu, .header.sticky .header__cart, .header.sticky .humberger__open, .header.sticky .container { display: none !important; }
-        .header.sticky .mobile-sticky-top-bar { display: flex !important; }
+
     }
     @keyframes fadeInDown { from { opacity: 0; transform: translate3d(0, -100%, 0); } to { opacity: 1; transform: none; } }
 </style>
@@ -237,23 +233,7 @@ if(isset($_SESSION['email'])) {
     <script src="js/mixitup.min.js"></script>
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/main.js"></script>
-    <script>
-    // ... Sticky Header Script ... 
-    // ... Recalc Script ...
-        window.onscroll = function() {myStickyFunction()};
-        var header = document.getElementById("myHeader");
-        var logo = document.getElementById("headerLogo");
-        var sticky = header.offsetTop;
-        function myStickyFunction() {
-            if (window.pageYOffset > sticky) {
-                header.classList.add("sticky");
-                if(window.innerWidth > 767) { logo.style.maxWidth = "120px"; }
-            } else {
-                header.classList.remove("sticky");
-                logo.style.maxWidth = "180px";
-            }
-        }
-    </script>
+    
 </body>
 </html>
 <?php
