@@ -459,7 +459,7 @@ ol {
 }
 
 .header__menu ul li a {
-	font-size: 14px;
+	font-size: 1.2rem;
 	color: #252525;
 	text-transform: uppercase;
 	font-weight: 700;
@@ -2712,4 +2712,3 @@ ol {
 		padding: 20px;
 	}
 }
-
