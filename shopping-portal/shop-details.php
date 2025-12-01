@@ -51,6 +51,19 @@ if(isset($_SESSION['email'])) {
         .header__logo { text-align: center; margin-bottom: 10px; }
         .header__cart { text-align: center; padding: 10px 0; }
         .mobile-bottom-nav { display: flex; }
+        .header__top,
+        .header__menu, 
+        .header__cart { 
+            display: none !important; 
+        }
+
+        .breadcrumb-section .breadcrumb__text h2 {
+            font-size: 20px;
+        }
+
+        .breadcrumb-section {
+            padding: 20px 0 20px 0;
+        }
         body { padding-bottom: 70px; }
         .header.sticky { padding: 0; }
         .header.sticky .header__logo, .header.sticky .header__menu, .header.sticky .header__cart, .header.sticky .humberger__open, .header.sticky .container { display: none !important; }
@@ -102,64 +115,8 @@ if(isset($_SESSION['email'])) {
                 <i class="fa fa-bars"></i>
             </div>
         </div>
-        
-        <div class="mobile-sticky-top-bar">
-            <div class="search-wrapper">
-                <form action="shop-grid.php" method="GET">
-                    <input type="text" name="search" placeholder="Search products...">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
-            </div>
-            <div class="icons-wrapper">
-                <a href="shoping-cart.php"><i class="fa fa-shopping-bag"></i></a>
-                <a href="contact.php"><i class="fa fa-envelope"></i></a>
-            </div>
-        </div>
     </header>
 
-    <section class="hero hero-normal">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3">
-                    <div class="hero__categories">
-                        <div class="hero__categories__all">
-                            <i class="fa fa-bars"></i>
-                            <span>Categories</span>
-                        </div>
-                        <ul>
-                            <?php
-                            $c=0;
-                            $res=$pdo->query("SELECT category_name FROM category");
-                            while($row = $res->fetch()){
-
-                                ?>
-                                <li id="echo $c;"><a href="#"><?php echo $row["category_name"]; ?></a></li>
-                                <?php $c=$c+1; } ?>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-9">
-                    <div class="hero__search">
-                        <div class="hero__search__form">
-                            <form action="#">
-                                <input type="text" placeholder="What do you need?">
-                                <button type="submit" class="site-btn">SEARCH</button>
-                            </form>
-                        </div>
-                        <div class="hero__search__phone">
-                            <div class="hero__search__phone__icon">
-                                <i class="fa fa-phone"></i>
-                            </div>
-                            <div class="hero__search__phone__text">
-                                <h5>69696969696</h5>
-                               
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
     <div id="error" class='alert alert-danger text-center' style="display: none">
             This product is already exist in shopping cart !
         </div>
@@ -181,7 +138,9 @@ if(isset($_SESSION['email'])) {
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    
+                    <div class="breadcrumb__text">
+                        <h2>Add to Cart</h2>
+                    </div>
                 </div>
             </div>
         </div>
