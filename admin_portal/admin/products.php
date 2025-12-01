@@ -1,16 +1,82 @@
 <?php
 include "check_ath.php";
-?>
-<?php include "functions.php";
+include "functions.php";
 $pdo = get_connection();
+
+// --- HANDLE ADD PRODUCT ---
+if(isset($_POST["sumbit1"])) {
+    $product_name = $_POST["product_name"];
+    $category_name = $_POST["category_name"];
+    $price = $_POST["price"];
+    $quantity = $_POST["quantity"];
+    
+    // Image Upload
+    $fnm = $_FILES["product_image"]["name"];
+    $dst = "product-image/default.jpg"; // Fallback
+    
+    if($fnm) {
+        $v1 = rand(1111,9999);
+        $v2 = rand(1111,9999);
+        $v3 = md5($v1.$v2);
+        $dst = "product-image/".$v3.$fnm;
+        move_uploaded_file($_FILES["product_image"]["tmp_name"], $dst);
+    }
+
+    // Check duplicate
+    $stmt = $pdo->prepare("SELECT * FROM product where product_name=?");
+    $stmt->execute([$product_name]);
+    if($stmt->rowCount() > 0) {
+        echo "<script>alert('Product already exists!');</script>";
+    } else {
+        $stmt = $pdo->prepare("INSERT INTO product (product_name, product_price, quantity, image_file_name, category_name) VALUES (?,?,?,?,?)");
+        $stmt->execute([$product_name, $price, $quantity, $dst, $category_name]);
+        echo "<script>alert('Product added successfully!'); window.location.href='products.php';</script>";
+    }
+}
+
+// --- HANDLE EDIT PRODUCT ---
+if(isset($_POST["edit_product"])) {
+    $pid = $_POST["pid"];
+    $product_name = $_POST["e_product_name"];
+    $category_name = $_POST["e_category_name"];
+    $price = $_POST["e_product_price"];
+    $quantity = $_POST["e_product_qty"];
+    
+    // Update basic info
+    $sql = "UPDATE product SET product_name=?, category_name=?, product_price=?, quantity=? WHERE product_id=?";
+    $params = [$product_name, $category_name, $price, $quantity, $pid];
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+
+    // Update Image if provided
+    if(!empty($_FILES["e_product_image"]["name"])) {
+        $fnm = $_FILES["e_product_image"]["name"];
+        $v1 = rand(1111,9999);
+        $v2 = rand(1111,9999);
+        $v3 = md5($v1.$v2);
+        $dst = "product-image/".$v3.$fnm;
+        move_uploaded_file($_FILES["e_product_image"]["tmp_name"], $dst);
+
+        $stmt = $pdo->prepare("UPDATE product SET image_file_name=? WHERE product_id=?");
+        $stmt->execute([$dst, $pid]);
+    }
+    
+    echo "<script>alert('Product updated successfully!'); window.location.href='products.php';</script>";
+}
+
+// --- HANDLE DELETE PRODUCT ---
+if(isset($_POST["sum_delete"])) {
+    $id_to_delete = $_POST["the_id"]; // Using ID now for safety
+    $stmt = $pdo->prepare("DELETE FROM product WHERE product_id = ?");
+    $stmt->execute([$id_to_delete]);
+    echo "<script>alert('Product deleted successfully!'); window.location.href='products.php';</script>";
+}
 ?>
 <?php include_once("./templates/top.php"); ?>
 <?php include_once("./templates/navbar.php"); ?>
 <div class="container-fluid">
   <div class="row">
-    
     <?php include "./templates/sidebar.php"; ?>
-
       <div class="row">
           <div class="col-10">
               <h2>Product List</h2>
@@ -19,372 +85,168 @@ $pdo = get_connection();
               <a href="#" data-toggle="modal" data-target="#add_product_modal" class="btn btn-warning btn-sm">Add Product</a>
           </div>
       </div>
-            <!--
-	  <div class="widget-content nopadding">
-		<form name="form1" action="" method="post" class="form-horizontal">
-			<div class="control-group">
-			
-			<lable class="control-label" > product name : </lable>
-			
-			<div class="control">
-				<input type="text" class="span11" placeholder="product name" name="product_name">
-			</div>
-			</div>
-			<div class="control-group">
-			<lable class="control-label" > category name : </lable>
-			<div class="control">
-				<select class="span11" >
-				
-				<?php /*
-					
-					$stmt = $pdo->query("SELECT category_name FROM category");
-					while ($row = $stmt->fetch()){
-						echo "<option>";
-						echo $row['category_name'];
-						echo "</option>";
-						
-					}
-					*/?>
-					</select>
-			</div>
-			</div>
-			<div class="control-group">
-			<lable class="control-label" > price : </lable>
-			<div class="control">
-				<input type="text" class="span11" placeholder="product price" name="price">
-			</div>
-			</div>
-			
-			<div class="control-group">
-			<lable class="control-label" > Quantity : </lable>
-			<div class="control">
-				<input type="text" class="span11" placeholder="product Quantity" name="quantity">
-			</div>
-			</div>
-			
-			<div class="control-group">
-			<lable class="control-label" > disease : </lable>
-			<div class="control">
-				<input type="text" class="span11" placeholder="product disease" name="disease">
-			</div>
-			</div>
-			
-			<div class="form-action"> 
-				<button type="sumbit" name="sumbit1" class="btn btn-info">save</button>
-			</div>
-		<div class"alert alert-danger" id="error" style="display: none">
-			This product is already exist !
-		  </div>
-		  
-		  <div class"alert alert-success" id="success" style="display: none"> 
-		   product inserted successfully !
-		  </div>
-			
-			
-		</form>
-	  </div>
-	  </div>
-       -->
 
       <div class="table-responsive">
         <table class="table table-striped table-sm">
           <thead>
             <tr>
-              <th>id</th>
+              <th>ID</th>
               <th>Name</th>
-             
-              
+              <th>Category</th>
               <th>Quantity</th>
               <th>Price</th>
-               <th>Image</th>
-             
+              <th>Image</th>
               <th>Action</th>
             </tr>
           </thead>
-          
+          <tbody id="product_list">
 			<?php 
-                $res=$pdo->query("SELECT * FROM product");
-                // use a display counter so the table shows 1,2,3... rather than DB product_id values
-                $c=1;
+                $res = $pdo->query("SELECT * FROM product");
                 while($row = $res->fetch()){
-
-
-
-					?>
-             <form action="" method="post" >
-			<tbody id="product_list">
-              <td style="vertical-align: middle;"><?php echo $c; ?></td>
-              <td style="vertical-align: middle;"><?php echo $row["product_name"]; ?></td>
-
-              <td style="vertical-align: middle;"><?php echo $row["quantity"]; ?></td>
-              <td style="vertical-align: middle;"><?php echo $row["product_price"]; ?></td>
-              <td style="vertical-align: middle;"><?php $img = (strpos($row['image_file_name'], '/') === false) ? 'product-image/'.$row['image_file_name'] : $row['image_file_name']; ?><img src="<?php echo htmlspecialchars($img, ENT_QUOTES, 'UTF-8'); ?>" width="50" style="vertical-align: middle;"></td>
-              <input type="hidden" name="the_id" value="<?php echo $row["product_name"]; ?>">
-
-              <td style="vertical-align: middle;" id="<?php echo $c; ?>"><a class="btn btn-sm btn-info">Edit</a><button  type="submit" name="sum_delete"  class="btn btn-sm btn-danger">Delete</button></td>
-				</tbody>
-             </form>
-                    <?php $c=$c+1; } ?>
-          
+            ?>
+            <tr>
+              <form action="" method="post">
+                  <td style="vertical-align: middle;"><?php echo $row["product_id"]; ?></td>
+                  <td style="vertical-align: middle;"><?php echo $row["product_name"]; ?></td>
+                  <td style="vertical-align: middle;"><?php echo $row["category_name"]; ?></td>
+                  <td style="vertical-align: middle;"><?php echo $row["quantity"]; ?></td>
+                  <td style="vertical-align: middle;"><?php echo $row["product_price"]; ?></td>
+                  <td style="vertical-align: middle;">
+                      <?php $img = (strpos($row['image_file_name'], '/') === false) ? 'product-image/'.$row['image_file_name'] : $row['image_file_name']; ?>
+                      <img src="<?php echo htmlspecialchars($img, ENT_QUOTES, 'UTF-8'); ?>" width="50">
+                  </td>
+                  
+                  <td style="vertical-align: middle;">
+                      <button type="button" class="btn btn-sm btn-info edit-btn" 
+                          data-toggle="modal" 
+                          data-target="#edit_product_modal"
+                          data-id="<?php echo $row['product_id']; ?>"
+                          data-name="<?php echo $row['product_name']; ?>"
+                          data-category="<?php echo $row['category_name']; ?>"
+                          data-price="<?php echo $row['product_price']; ?>"
+                          data-qty="<?php echo $row['quantity']; ?>"
+                          data-img="<?php echo $img; ?>">
+                          Edit
+                      </button>
+                      
+                      <input type="hidden" name="the_id" value="<?php echo $row["product_id"]; ?>">
+                      <button type="submit" name="sum_delete" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this product?');">Delete</button>
+                  </td>
+              </form>
+            </tr>
+            <?php } ?>
+          </tbody>
         </table>
       </div>
     </main>
   </div>
 </div>
 
-<div id="error" class='alert alert-danger text-center' style="display: none">
-This product is already exist !
-</div>
-
-<div id="success" class='alert alert-success text-center' style="display: none">
-product inserted successfully !
-</div>
-    <div id="delete-success" class='alert alert-success text-center' style="display: none">
-        product deleted  successfully !
-    </div>
-
-
-<!-- Add Product Modal start -->
 <div class="modal fade" id="add_product_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title">Add Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
-                <form id="add-product-form" action="" method="post" enctype="multipart/form-data">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label>Product Name</label>
-                                <input type="text" name="product_name" class="form-control" placeholder="Enter Product Name" required>
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label>Category Name</label>
-                                <select class="form-control category_list" name="category_name">
-                                    <?php
-
-                                    $stmt = $pdo->query("SELECT category_name FROM category");
-                                    while ($row = $stmt->fetch()){
-                                        echo "<option>";
-                                        echo $row['category_name'];
-                                        echo "</option>";
-
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label>price</label>
-                                <input type="number" class="form-control" name="price" placeholder="Enter product price"></input>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label>Product Quantity</label>
-                                <input type="number" name="quantity" class="form-control" placeholder="Enter Product Quantity" required>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                           
-                        </div>
-
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label>Product Image <small>(format: jpg, jpeg, png)</small></label>
-                                <input type="file" name="product_image" class="form-control">
-                            </div>
-                        </div>
-
-                        <input type="hidden" name="add_category" value="1">
-                        <div class="col-12">
-                            <button type="submit" name="sumbit1" class="btn btn-primary add-category">Add product</button>
-                        </div>
+                <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" name="product_name" class="form-control" required>
                     </div>
-
+                    <div class="form-group">
+                        <label>Category Name</label>
+                        <select class="form-control" name="category_name">
+                            <?php
+                            $stmt = $pdo->query("SELECT category_name FROM category");
+                            while ($row = $stmt->fetch()){
+                                echo "<option value='".$row['category_name']."'>".$row['category_name']."</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input type="number" class="form-control" name="price" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" name="quantity" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Image <small>(jpg, jpeg, png only)</small></label>
+                        <input type="file" name="product_image" class="form-control" accept=".jpg, .jpeg, .png">
+                    </div>
+                    <button type="submit" name="sumbit1" class="btn btn-primary" onclick="return confirm('Add this product?');">Add product</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-<!-- Add Product Modal end -->
 
-<!-- Edit Product Modal start -->
 <div class="modal fade" id="edit_product_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title">Edit Product</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
-        <form id="edit-product-form" enctype="multipart/form-data">
-          <div class="row">
-            <div class="col-12">
-              <div class="form-group">
-                <label>Product Name</label>
-                <input type="text" name="e_product_name" class="form-control" placeholder="Enter Product Name">
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label>Brand Name</label>
-                <select class="form-control brand_list" name="e_brand_id">
-                  <option value="">Select Brand</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label>Category Name</label>
-                <select class="form-control category_list" name="e_category_id">
-                  <option value="">Select Category</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label>Product Description</label>
-                <textarea class="form-control" name="e_product_desc" placeholder="Enter product desc"></textarea>
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label>Product Qty</label>
-                <input type="number" name="e_product_qty" class="form-control" placeholder="Enter Product Quantity">
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label>Product Price</label>
-                <input type="number" name="e_product_price" class="form-control" placeholder="Enter Product Price">
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label>Product Keywords <small>(eg: apple, iphone, mobile)</small></label>
-                <input type="text" name="e_product_keywords" class="form-control" placeholder="Enter Product Keywords">
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label>Product Image <small>(format: jpg, jpeg, png)</small></label>
-                <input type="file" name="e_product_image" class="form-control">
-                <img src="../product_images/1.0x0.jpg" class="img-fluid" width="50">
-              </div>
-            </div>
-            <input type="hidden" name="pid">
-            <input type="hidden" name="edit_product" value="1">
-            <div class="col-12">
-              <button type="button" class="btn btn-primary submit-edit-product">Add Product</button>
-            </div>
+        <form action="" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="pid" id="edit_pid">
+          <div class="form-group">
+            <label>Product Name</label>
+            <input type="text" name="e_product_name" id="edit_name" class="form-control" required>
           </div>
-		 
-		  
-          
+          <div class="form-group">
+            <label>Category Name</label>
+            <select class="form-control" name="e_category_name" id="edit_category">
+                <?php
+                $stmt = $pdo->query("SELECT category_name FROM category");
+                while ($row = $stmt->fetch()){
+                    echo "<option value='".$row['category_name']."'>".$row['category_name']."</option>";
+                }
+                ?>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Price</label>
+            <input type="number" name="e_product_price" id="edit_price" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Quantity</label>
+            <input type="number" name="e_product_qty" id="edit_qty" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Change Image <small>(Leave blank to keep current)</small></label>
+            <input type="file" name="e_product_image" class="form-control" accept=".jpg, .jpeg, .png">
+            <img id="edit_img_preview" src="" width="50" style="margin-top:10px;">
+          </div>
+          <button type="submit" name="edit_product" class="btn btn-primary" onclick="return confirm('Save changes?');">Save Changes</button>
         </form>
       </div>
     </div>
   </div>
 </div>
 
-
-<!-- Edit Product Modal end -->
-
 <?php include_once("./templates/footer.php"); ?>
 
+<script>
+// JS to Populate Edit Modal
+$(document).on("click", ".edit-btn", function () {
+    var pid = $(this).data('id');
+    var name = $(this).data('name');
+    var category = $(this).data('category');
+    var price = $(this).data('price');
+    var qty = $(this).data('qty');
+    var img = $(this).data('img');
 
-<?php
-	if(isset($_POST["sumbit1"])) {
-        $v1=rand(1111,9999);
-        $v2=rand(1111,9999);
-        $v3=$v1.$v2;
-        $v3=md5($v3);
-		$count =0;
-        $x_value=$_POST["product_name"];
-		$res = $pdo->prepare("SELECT * FROM product where product_name=? ");
-		$res ->execute([$x_value]);
-		$count =$res->rowCount();
-        $fnm=$_FILES["product_image"]["name"];
-        $dst="product-image/".$v3.$fnm;
-        copy($_FILES["product_image"]["tmp_name"],$dst);
-
-
-        var_dump($count);
-		
-
-		if($count >0) {
-			?>
-			<script type="text/javascript">
-			document.getElementById("success").style.display="none";
-			document.getElementById("error").style.display="block";
-			</script>
-            <?php
-    }else {
-      $product_name=$_POST["product_name"];
-      $price=$_POST["price"];
-      $quantity=$_POST["quantity"];
-      
-      $category_name = isset($_POST['category_name']) ? $_POST['category_name'] : null;
-
-      $hasCategoryCol = false;
-      try {
-        $colCheck = $pdo->query("SHOW COLUMNS FROM product LIKE 'category_name'");
-        if ($colCheck && $colCheck->rowCount() > 0) {
-          $hasCategoryCol = true;
-        }
-      } catch (Exception $e) {
-        $hasCategoryCol = false;
-      }
-
-      if ($hasCategoryCol && $category_name !== null) {
-        $stmt = $pdo->prepare("INSERT INTO product (product_name, product_price, quantity, image_file_name, category_name) VALUES (?,?,?,?,?)");
-        $stmt->execute([$product_name, $price, $quantity, $dst, $category_name]);
-      } else {
-        $stmt = $pdo->prepare("INSERT INTO product (product_name, product_price, quantity, image_file_name) VALUES (?,?,?,?)");
-        $stmt->execute([$product_name, $price, $quantity, $dst]);
-      }
-        ?>
-        <script type="text/javascript">
-
-            document.getElementById("success").style.display="block";
-            document.getElementById("error").style.display="none";
-            setTimeout(function () {
-
-                window.location.href=window.location.href;
-
-            },3000);
-        </script>
-<?php
-        }
-    }
-    if(isset($_POST["sum_delete"])) {
-
-        $product_to_delete=$_POST["the_id"];
-        echo var_dump($product_to_delete);
-        $stmt= $pdo->prepare ("delete from product where product_name = ?");
-        $stmt->execute([$product_to_delete]);
-        ?>
-        <script type="text/javascript">
-            document.getElementById("delete-success").style.display="block";
-            setTimeout(function () {
-                window.location.href=window.location.href;
-
-            },1000);
-        </script>
-<?php
-
-}
-
-
-?>
+    $("#edit_pid").val(pid);
+    $("#edit_name").val(name);
+    $("#edit_category").val(category); // Selects the option with this value
+    $("#edit_price").val(price);
+    $("#edit_qty").val(qty);
+    $("#edit_img_preview").attr("src", img);
+});
+</script>

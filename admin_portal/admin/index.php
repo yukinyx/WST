@@ -40,7 +40,6 @@ $pdo = get_connection();
 
               <td><?php echo $row["admin_id"]; ; ?></td>
               <td><?php echo $row["username"]; ; ?></td>
-
               <td><?php echo $row["email"]; ; ?></td>
             </tr>
           </tbody>

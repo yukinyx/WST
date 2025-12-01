@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 01, 2025 at 07:04 AM
+-- Generation Time: Dec 01, 2025 at 10:14 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -136,7 +136,7 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`product_id`, `product_name`, `product_price`, `image_file_name`, `category_id`, `quantity`, `category_name`) VALUES
-(34, 'Lace', 70, 'product-image/cd8d6b172eb8df57a2b992904c82cab9cat-1.jpg', 0, 56, 'Laces'),
+(34, 'Lace', 70, 'product-image/24b5a36d251d34b5a3108691b4fbd1d0cat-1.jpg', 0, 56, 'Laces'),
 (35, 'Uniform Textile', 150, 'product-image/e42a638f10be8ba0b27342fc16266b8acat-5.jpg', 0, 56, 'Textiles'),
 (36, 'University Pin', 50, 'product-image/579c309dad1a4e52441519de42cb7c00cat-2.jpg', 0, 76, 'Pins');
 
@@ -175,7 +175,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`UserId`, `email`, `role`, `session`, `phone_number`, `customerName`, `password`, `IMG_URL`) VALUES
-(6, 'asd@gmail.com', 'customer', '', '12345666', 'asd', '$2y$10$X73v/X.DLo6rlu1kG90uS.c45fflP1ROffgFjgST9X9OPUT7CgzfC', 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.pngall.com%2Fwp-content%2Fuploads%2F5%2FProfile-Avatar-PNG.png&f=1&nofb=1');
+(6, 'asd@gmail.com', 'customer', '', '09455813309', 'asd', '$2y$10$X73v/X.DLo6rlu1kG90uS.c45fflP1ROffgFjgST9X9OPUT7CgzfC', 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.pngall.com%2Fwp-content%2Fuploads%2F5%2FProfile-Avatar-PNG.png&f=1&nofb=1'),
+(8, '23-64282@g.batstate-u.edu.ph', 'customer', '', '232323', 'asd', '$2y$10$f8Wk812VRnQ58DZeei/AD.TuynObFQKPNam8un0chnItdKgzwxG2u', 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.pngall.com%2Fwp-content%2Fuploads%2F5%2FProfile-Avatar-PNG.png&f=1&nofb=1');
 
 --
 -- Indexes for dumped tables
@@ -238,7 +239,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `order`
@@ -262,13 +263,13 @@ ALTER TABLE `product`
 -- AUTO_INCREMENT for table `shopping_cart`
 --
 ALTER TABLE `shopping_cart`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `UserId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
