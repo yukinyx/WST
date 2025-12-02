@@ -162,97 +162,108 @@ if(isset($_SESSION['email'])) {
         </div>
     </section>
     
-    <section class="hero hero-normal">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3">
-                    <div class="hero__categories" id="categoriesOverlay">
-                        <div class="hero__categories__all" onclick="toggleCategories()">
-                            <i class="fa fa-bars"></i>
-                            <span>Categories</span>
-                        </div>
-                        <ul class="categories-list">
-                            <li><a href="shop-grid.php">All</a></li>
-                            <?php
-                            $c=0;
-                            $res=$pdo->query("SELECT category_name FROM category");
-                            while($row = $res->fetch()){
-                                ?>
-                            <li id="echo $c;"><a href="shop-grid.php?category=<?php echo urlencode($row['category_name']); ?>"><?php echo $row["category_name"]; ?></a></li>
-                            <?php $c=$c+1; } ?>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-9">
-                    <div class="hero__search">
-                        <div class="hero__search__form">
-                            <!-- FUNCTIONAL SEARCH FORM -->
-                            <form action="shop-grid.php" method="GET">
-                                <input type="text" name="search" placeholder="What do you need?" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-                                <button type="submit" class="site-btn">SEARCH</button>
-                            </form>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
+ <section class="product spad">
+    <div class="container">
+        <div class="row">
+            
+<div class="col-lg-3 col-md-5">
+    <div class="sidebar">
+        
+        <div class="sidebar__item">
+            <h4>Search</h4>
+            <form action="shop-grid.php" method="GET">
+                <input type="text" name="search" placeholder="Search..." style="width: 100%; border: 1px solid #ddd; padding: 10px; color: #666;" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+            </form>
         </div>
-    </section>
-  
-   <section class="product spad">
-        <div class="container">
-            <div class="row">
-                
-                <div class="col-lg-9 col-md-7">
-                    <div class="row">
-					    <?php
-                            // --- SEARCH LOGIC ---
-                            if(isset($_GET['search']) && !empty($_GET['search'])){
-                                $search_term = "%" . $_GET['search'] . "%";
-                                $stmt = $pdo->prepare("SELECT * FROM product WHERE product_name LIKE ?");
-                                $stmt->execute([$search_term]);
-                            } 
-                            // --- CATEGORY FILTER LOGIC ---
-                            else if(isset($_GET['category']) && !empty($_GET['category'])){
-                                $cat = $_GET['category'];
-                                $stmt = $pdo->prepare("SELECT * FROM product WHERE category_name = ?");
-                                $stmt->execute([$cat]);
-                            }
-                            // --- DEFAULT: SHOW ALL ---
-                            else {
-                                $stmt = $pdo->prepare("SELECT * FROM product");
-                                $stmt->execute();
-                            }
 
-                            $count = $stmt->rowCount();
-                            
-                            if($count == 0) {
-                                echo "<div class='col-lg-12'><h5>No products found.</h5></div>";
-                            }
+        <div class="sidebar__item">
+            
+            <h4 class="d-none d-lg-block">Categories</h4>
 
-							while($row = $stmt->fetch()){
-								$loc="../admin_portal/admin/"
-						?>
-								
+            <div class="mobile-category-toggle d-lg-none" id="mobileCatToggle">
+                <i class="fa fa-bars"></i>
+                <span>Categories</span>
+                <i class="fa fa-angle-down arrow-icon"></i>
+            </div>
+
+            <ul id="mobileCatList">
+                <li>
+                    <a href="shop-grid.php" class="<?php echo (!isset($_GET['category'])) ? 'active-category' : ''; ?>">
+                        All Products
+                    </a>
+                </li>
+
+                <?php
+                // Fetch Categories
+                $catStmt = $pdo->query("SELECT category_name FROM category");
+                while ($catRow = $catStmt->fetch()) {
+                    $isActive = (isset($_GET['category']) && $_GET['category'] == $catRow['category_name']) ? 'active-category' : '';
+                ?>
+                    <li>
+                        <a href="shop-grid.php?category=<?php echo urlencode($catRow['category_name']); ?>" class="<?php echo $isActive; ?>">
+                            <?php echo htmlspecialchars($catRow['category_name']); ?>
+                        </a>
+                    </li>
+                <?php } ?>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+
+            <div class="col-lg-9 col-md-7">
+                <div class="row">
+                    <?php
+                        // --- YOUR ORIGINAL PHP LOGIC STARTS HERE ---
+                        
+                        // 1. Search Logic
+                        if(isset($_GET['search']) && !empty($_GET['search'])){
+                            $search_term = "%" . $_GET['search'] . "%";
+                            $stmt = $pdo->prepare("SELECT * FROM product WHERE product_name LIKE ?");
+                            $stmt->execute([$search_term]);
+                        } 
+                        // 2. Category Logic
+                        else if(isset($_GET['category']) && !empty($_GET['category'])){
+                            $cat = $_GET['category'];
+                            $stmt = $pdo->prepare("SELECT * FROM product WHERE category_name = ?");
+                            $stmt->execute([$cat]);
+                        }
+                        // 3. Default (Show All)
+                        else {
+                            $stmt = $pdo->prepare("SELECT * FROM product");
+                            $stmt->execute();
+                        }
+
+                        $count = $stmt->rowCount();
+                        
+                        if($count == 0) {
+                            echo "<div class='col-lg-12'><h5>No products found.</h5></div>";
+                        }
+
+                        while($row = $stmt->fetch()){
+                    ?>
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item">
                                 <div class="product__item__pic set-bg" data-setbg="<?php echo '../admin_portal/admin/'.$row['image_file_name']; ?>">
                                     <ul class="product__item__pic__hover">
-                                        <li><a href="shop-details.php?product=<?php echo $row["product_name"]; ?>"><i class="fa fa-shopping-cart"></i></a></li>
+                                        <li><a href="shop-details.php?product=<?php echo urlencode($row["product_name"]); ?>"><i class="fa fa-shopping-cart"></i></a></li>
                                     </ul>
                                 </div>
                                 <div class="product__item__text">
-                                    <h6><a href="shop-details.php?product=<?php echo $row["product_name"]; ?>"><?php echo $row["product_name"]; ?></a></h6>
-                                    <h5>$<?php echo $row["product_price"]; ?></h5>
+                                    <h6><a href="shop-details.php?product=<?php echo urlencode($row["product_name"]); ?>"><?php echo htmlspecialchars($row["product_name"]); ?></a></h6>
+                                    <h5>$<?php echo htmlspecialchars($row["product_price"]); ?></h5>
                                 </div>
                             </div>
                         </div>
-						<?php } ?>
-                    </div>
+                    <?php } // End While Loop ?>
+                    
                 </div>
             </div>
-        </div>
-    </section>
+            </div>
+    </div>
+</section>
+
     
     <!-- MOBILE BOTTOM NAV -->
     <div class="mobile-bottom-nav">
@@ -290,7 +301,6 @@ if(isset($_SESSION['email'])) {
     <script src="js/main.js"></script>
 
     <script>
-        // Sticky Header Logic
         window.onscroll = function() {myStickyFunction()};
         var header = document.getElementById("myHeader");
         var logo = document.getElementById("headerLogo");
@@ -305,5 +315,53 @@ if(isset($_SESSION['email'])) {
             }
         }
     </script>
+
+    <script>
+    var lastScrollTop = 0;
+    var header = document.getElementById("myHeader");
+
+    window.addEventListener("scroll", function() {
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+       
+        if (scrollTop <= 0) {
+            header.classList.remove("header-hidden");
+            header.classList.remove("header-visible");
+            header.style.position = "relative"; 
+            return;
+        }
+
+        if (scrollTop > lastScrollTop) {
+        
+            header.classList.remove("header-visible");
+            header.classList.add("header-hidden");
+        } else {
+            header.style.position = "fixed"; 
+            header.classList.remove("header-hidden");
+            header.classList.add("header-visible");
+        }
+        
+        lastScrollTop = scrollTop;
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Toggle Category List on Mobile
+        $("#mobileCatToggle").on("click", function() {
+            $("#mobileCatList").slideToggle(300);
+            $(this).find(".arrow-icon").toggleClass("fa-angle-down fa-angle-up");
+        });
+
+        // --- FIX: Reset styles when resizing to desktop ---
+        $(window).resize(function() {
+            if ($(window).width() > 991) {
+                // Remove the "display: none" added by jQuery
+                $("#mobileCatList").css("display", ""); 
+            }
+        });
+    });
+</script>
+
 </body>
 </html>

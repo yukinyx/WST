@@ -185,7 +185,7 @@ if(isset($_SESSION['email'])) {
                         </form>
                         <ul>
                             <li><b>Availability</b> <span><?php echo $row["quantity"]; ?> In Stock</span></li>
-                            <li><b>Weight</b> <span>0.5 kg</span></li>
+                            
                         </ul>
                     </div>
                 </div>

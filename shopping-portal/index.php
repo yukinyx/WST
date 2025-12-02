@@ -302,25 +302,28 @@ if(isset($_SESSION['email'])) {
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="section-title">
-                        <h2>Featured Product</h2>
-                    </div>
-                    <div class="featured__controls">
-                        <ul>
-                            <li class="active" data-filter="*">All</li>
-                            <?php
-                            try {
-                                $catStmt = $pdo->query("SELECT category_name FROM category");
-                                while ($catRow = $catStmt->fetch()) {
-                                    $catName = $catRow['category_name'];
-                                    $catClass = preg_replace('/[^A-Za-z0-9_\-]/', '', str_replace(' ', '', $catName));
-                                    echo '<li data-filter=".' . htmlspecialchars($catClass, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($catName, ENT_QUOTES, 'UTF-8') . '</li>';
-                                }
-                            } catch (Exception $e) {
-                            }
-                            ?>
-                        </ul>
-                    </div>
+    <div class="section-title">
+        <h2>Featured Product</h2>
+    </div>
+    
+    <div class="featured__text__slider owl-carousel">
+        
+        <div class="filter-item active" data-filter="*">All</div>
+
+        <?php
+        try {
+            $catStmt = $pdo->query("SELECT category_name FROM category");
+            while ($catRow = $catStmt->fetch()) {
+                $catName = $catRow['category_name'];
+                $catClass = preg_replace('/[^A-Za-z0-9_\-]/', '', str_replace(' ', '', $catName));
+                
+
+                echo '<div class="filter-item" data-filter=".' . htmlspecialchars($catClass) . '">' . htmlspecialchars($catName) . '</div>';
+            }
+        } catch (Exception $e) {}
+        ?>
+    </div>
+</div>
                 </div>
             </div>
             <div class="row featured__filter">
@@ -408,7 +411,7 @@ if(isset($_SESSION['email'])) {
             if (window.pageYOffset > sticky) {
                 header.classList.add("sticky");
                 if(window.innerWidth > 767) {
-                    // Only resize logo on Desktop (since we hide it on mobile sticky)
+
                     logo.style.maxWidth = "120px";
                 }
             } else {
@@ -418,6 +421,69 @@ if(isset($_SESSION['email'])) {
         }
     </script>
 
+<script>
+    $(document).ready(function() {
+        // 1. Initialize MixItUp (Product Filtering)
+        var mixer = mixitup('.featured__filter', {
+            selectors: {
+                target: '.mix' // Selects the product items
+            },
+            animation: {
+                duration: 300
+            }
+        });
+
+ // 2. Initialize the Text Slider
+var textSlider = $(".featured__text__slider").owlCarousel({
+    loop: true,
+    margin: 15,       // Space between words
+    nav: true, 
+    dots: false, 
+    autoWidth: true,  // Keeps text snug
+    // Use clean angle icons for the buttons
+    navText: ["<i class='fa fa-angle-left'></i>", "<i class='fa fa-angle-right'></i>"], 
+    slideBy: 5,       // Scroll 5 items per click
+    smartSpeed: 600,
+    responsive: {
+        0: {
+            items: 2, // Mobile: Show 2-3 items
+            slideBy: 2
+        },
+        576: {
+            items: 3, // Small tablets
+            slideBy: 3
+        },
+        992: {
+            items: 5, // Desktop: EXACTLY 5 ITEMS
+            slideBy: 5
+        }
+    }
+});
+</script>
+
+<script>
+var textSlider = $(".featured__text__slider").owlCarousel({
+    loop: true,
+    margin: 30,       // <--- CONTROLS THE GAP (30px between words)
+    nav: true, 
+    dots: false, 
+    autoWidth: true,  // <--- KEY FIX: Puts items next to each other snugly
+    navText: ["<span style='font-size:24px; font-weight:bold;'>&#8592;</span>", "<span style='font-size:24px; font-weight:bold;'>&#8594;</span>"],
+    smartSpeed: 600,
+    responsive: {
+        0: {
+            items: 3 // On mobile, standard view is safer
+        },
+        768: {
+            items: 4 // Tablet
+        },
+        992: {
+            // On desktop, autoWidth handles the count, so 'items' is just a fallback
+            items: 8 
+        }
+    }
+});
+</script>
 </body>
 
 </html>

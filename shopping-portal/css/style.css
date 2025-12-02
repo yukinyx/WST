@@ -521,216 +521,7 @@ ol {
 	display: none;
 }
 
-/*---------------------
-  Hero
------------------------*/
 
-.hero {
-	padding-bottom: 50px;
-}
-
-.hero.hero-normal {
-	padding-bottom: 30px;
-}
-
-.hero.hero-normal .hero__categories {
-	position: relative;
-}
-
-.hero.hero-normal .hero__categories ul {
-	display: none;
-	position: absolute;
-	left: 0;
-	top: 46px;
-	width: 100%;
-	z-index: 9;
-	background: #ffffff;
-}
-
-.hero.hero-normal .hero__search {
-	margin-bottom: 0;
-}
-
-.hero__categories__all {
-	background: #b94427;
-	position: relative;
-	padding: 10px 25px 10px 40px;
-	cursor: pointer;
-}
-
-.hero__categories__all i {
-	font-size: 16px;
-	color: #ffffff;
-	margin-right: 10px;
-}
-
-.hero__categories__all span {
-	font-size: 18px;
-	font-weight: 700;
-	color: #ffffff;
-}
-
-.hero__categories__all:after {
-	position: absolute;
-	right: 18px;
-	top: 9px;
-	content: "3";
-	font-family: "ElegantIcons";
-	font-size: 18px;
-	color: #ffffff;
-}
-
-.hero__categories {
-    position: relative;
-}
-
-.hero__categories .categories-list {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background: #ffffff;
-    border: 1px solid #ebebeb;
-    padding-left: 40px;
-    padding-top: 10px;
-    padding-bottom: 12px;
-    z-index: 999;
-    display: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.hero__categories .categories-list li {
-    list-style: none;
-}
-
-.hero__categories .categories-list li a {
-    font-size: 16px;
-    color: #1c1c1c;
-    line-height: 39px;
-    display: block;
-    transition: color 0.3s;
-}
-
-.hero__categories .categories-list li a:hover {
-    color: #b94427;
-}
-
-.hero__search {
-	overflow: hidden;
-	margin-bottom: 30px;
-}
-
-.hero__search__form {
-	width: 610px;
-	height: 50px;
-	border: 1px solid #ebebeb;
-	position: relative;
-	float: left;
-}
-
-.hero__search__form form .hero__search__categories {
-	width: 30%;
-	float: left;
-	font-size: 16px;
-	color: #1c1c1c;
-	font-weight: 700;
-	padding-left: 18px;
-	padding-top: 11px;
-	position: relative;
-}
-
-.hero__search__form form .hero__search__categories:after {
-	position: absolute;
-	right: 0;
-	top: 14px;
-	height: 20px;
-	width: 1px;
-	background: #000000;
-	opacity: 0.1;
-	content: "";
-}
-
-.hero__search__form form .hero__search__categories span {
-	position: absolute;
-	right: 14px;
-	top: 14px;
-}
-
-.hero__search__form form input {
-	width: 70%;
-	border: none;
-	height: 48px;
-	font-size: 16px;
-	color: #b2b2b2;
-	padding-left: 20px;
-}
-
-.hero__search__form form input::placeholder {
-	color: #b2b2b2;
-}
-
-.hero__search__form form button {
-	position: absolute;
-	right: 0;
-	top: -1px;
-	height: 50px;
-}
-
-.hero__search__phone {
-	display: flex;           /* Enables flexbox layout */
-    align-items: center;     /* Centers items Vertically */
-    justify-content: center;
-}
-
-.hero__search__phone__icon {
-	font-size: 18px;
-	color: #b94427;
-	height: 50px;
-	width: 50px;
-	background: #f5f5f5;
-	line-height: 50px;
-	text-align: center;
-	border-radius: 50%;
-	float: left;
-	margin-right: 20px;
-}
-
-.hero__search__phone__text h5 {
-	color: #1c1c1c;
-    font-weight: 700;
-}
-
-.hero__search__phone__text span {
-	font-size: 14px;
-	color: #6f6f6f;
-}
-
-.hero__item {
-	height: 431px;
-	display: flex;
-	align-items: center;
-	padding-left: 75px;
-}
-
-.hero__text span {
-	font-size: 14px;
-	text-transform: uppercase;
-	font-weight: 700;
-	letter-spacing: 4px;
-	color: #b94427;
-}
-
-.hero__text h2 {
-	font-size: 46px;
-	color: #252525;
-	line-height: 52px;
-	font-weight: 700;
-	margin: 10px 0;
-}
-
-.hero__text p {
-	margin-bottom: 35px;
-}
 
 /*---------------------
   Categories
@@ -784,6 +575,133 @@ ol {
 .categories__slider.owl-carousel .owl-nav button.owl-next {
 	left: auto;
 	right: -35px;
+}
+
+/* --- Mobile Category Dropdown Styles --- */
+
+.mobile-category-toggle {
+    background: #b94427; /* Brand Red */
+    color: #ffffff;
+    padding: 15px 20px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    
+    /* Layout: Center the text, Absolute the icons */
+    display: flex;
+    justify-content: center; /* Centers the "Categories" text */
+    align-items: center;
+    position: relative; /* Needed for absolute icons */
+    
+    /* STICKY BEHAVIOR */
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 60px; /* Distance from top edge (Adjust this if header covers it) */
+    z-index: 99;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Hover Effect */
+.mobile-category-toggle:hover {
+    background: #a1361e;
+}
+
+/* Left Icon (Bars) */
+.mobile-category-toggle .fa-bars {
+    position: absolute;
+    left: 20px;
+}
+
+/* Right Icon (Arrow) */
+.mobile-category-toggle .arrow-icon {
+    position: absolute;
+    right: 20px;
+}
+
+/* Mobile List Styles (Hidden by default) */
+@media (max-width: 991px) {
+    #mobileCatList {
+        display: none; 
+        background: #ffffff;
+        border: 1px solid #e1e1e1;
+        padding: 0; /* Removed padding for cleaner look */
+        border-radius: 0 0 4px 4px;
+        margin-top: -10px;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+    
+    #mobileCatList li {
+        list-style: none;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    #mobileCatList li a {
+        display: block;
+        padding: 12px 20px; /* Bigger tap area */
+        color: #333;
+        font-size: 16px;
+        transition: 0.2s;
+    }
+    
+    #mobileCatList li a:hover {
+        background: #f9f9f9;
+        color: #b94427;
+        padding-left: 25px; /* Slide effect on hover */
+    }
+}
+
+/* --- 1. Sticky Red Bar for Mobile --- */
+.mobile-category-toggle {
+    background: #b94427;
+    color: #ffffff;
+    padding: 15px 20px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    
+    /* Center Text & Icons */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    
+    /* MAKE IT STICKY */
+    position: -webkit-sticky;
+    position: sticky;
+    top: 80px; /* Adjusts position so it sits under the header */
+    z-index: 900;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.mobile-category-toggle .fa-bars { position: absolute; left: 20px; }
+.mobile-category-toggle .arrow-icon { position: absolute; right: 20px; }
+
+/* --- 2. THE FIX: Force List Visible on Desktop --- */
+@media (min-width: 992px) {
+    #mobileCatList {
+        /* This !important overrides the JavaScript "display: none" */
+        display: block !important; 
+    }
+    
+    .mobile-category-toggle {
+        display: none !important; /* Hide the red bar on desktop */
+    }
+}
+
+/* Mobile List Styles */
+@media (max-width: 991px) {
+    #mobileCatList {
+        display: none; /* Hidden by default on mobile */
+        background: #ffffff;
+        border: 1px solid #e1e1e1;
+        margin-top: -10px;
+    }
+    #mobileCatList li { list-style: none; border-bottom: 1px solid #f0f0f0; }
+    #mobileCatList li a { display: block; padding: 12px 20px; color: #333; }
 }
 
 /*---------------------
@@ -1000,6 +918,29 @@ ol {
 
 .sidebar__item .latest-product__text .owl-carousel .owl-nav {
 	right: 0;
+}
+
+.sidebar__item ul li a.active-category {
+    color: #b94427; 
+    font-weight: 700;
+}
+
+.header {
+    width: 100%;
+    z-index: 999;
+    background: #ffffff;
+    transition: top 0.3s ease-in-out; 
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+.header-hidden {
+    position: fixed;
+    top: -150px; 
+}
+
+.header-visible {
+    position: fixed;
+    top: 0;
 }
 
 .price-range-wrap .range-slider {
@@ -2529,186 +2470,253 @@ ol {
 /* Wide Mobile = 480px */
 
 @media only screen and (max-width: 767px) {
-	.hero__categories {
-		margin-bottom: 30px;
-	}
-	.hero__search {
-		margin-bottom: 30px;
-	}
-	.hero__search__form {
-		width: 100%;
-	}
-	.hero__search__form form input {
-		width: 100%;
-	}
-	.hero__search__form form .hero__search__categories {
-		display: none;
-	}
-	.hero__search__phone {
-		float: left;
-		margin-top: 30px;
-	}
-	.categories__slider.owl-carousel .owl-nav {
-		text-align: center;
-		margin-top: 40px;
-	}
-	.categories__slider.owl-carousel .owl-nav button {
-		position: relative;
-		left: 0;
-		top: 0;
-		-webkit-transform: translateY(0);
-		transform: translateY(0);
-	}
-	.categories__slider.owl-carousel .owl-nav button.owl-next {
-		right: -10px;
-	}
-	.footer__copyright {
-		text-align: center;
-	}
-	.footer__copyright__text {
-		float: none;
-		margin-bottom: 25px;
-	}
-	.footer__copyright__payment {
-		float: none;
-	}
-	.filter__item {
-		text-align: center;
-	}
-	.filter__option {
-		text-align: center;
-	}
-	.product__details__pic {
-		margin-bottom: 40px;
-	}
-	.product__details__tab .nav-tabs:before {
-		display: none;
-	}
-	.product__details__tab .nav-tabs:after {
-		display: none;
-	}
-	.shoping__cart__table {
-		overflow-y: auto;
-	}
-	.shoping__discount form input {
-		margin-bottom: 15px;
-	}
+    .hero__categories {
+        margin-bottom: 30px;
+    }
+    .hero__search {
+        margin-bottom: 30px;
+    }
+    .hero__search__form {
+        width: 100%;
+    }
+    .hero__search__form form input {
+        width: 100%;
+    }
+    .hero__search__form form .hero__search__categories {
+        display: none;
+    }
+    .hero__search__phone {
+        float: left;
+        margin-top: 30px;
+    }
+    .categories__slider.owl-carousel .owl-nav {
+        text-align: center;
+        margin-top: 40px;
+    }
+    .categories__slider.owl-carousel .owl-nav button {
+        position: relative;
+        left: 0;
+        top: 0;
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+    .categories__slider.owl-carousel .owl-nav button.owl-next {
+        right: -10px;
+    }
+    .footer__copyright {
+        text-align: center;
+    }
+    .footer__copyright__text {
+        float: none;
+        margin-bottom: 25px;
+    }
+    .footer__copyright__payment {
+        float: none;
+    }
+    .filter__item {
+        text-align: center;
+    }
+    .filter__option {
+        text-align: center;
+    }
+    .product__details__pic {
+        margin-bottom: 40px;
+    }
+    .product__details__tab .nav-tabs:before {
+        display: none;
+    }
+    .product__details__tab .nav-tabs:after {
+        display: none;
+    }
+    .shoping__cart__table {
+        overflow-y: auto;
+    }
+    .shoping__discount form input {
+        margin-bottom: 15px;
+    }
 
-	
-	.header .container {
-		position: relative;
-	}
-	
-		.header__top {
-			display: none;
-		}
-		.header__menu {
-			display: block;
-			padding: 6px 0;
-		}
-		.header__menu ul {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: nowrap;
-			gap: 16px;
-			padding: 6px 12px;
-			margin: 0;
-			overflow-x: auto;
-			-webkit-overflow-scrolling: touch;
-		}
-		.header__menu ul li {
-			display: inline-block;
-			margin-right: 0;
-		}
-		.header__menu ul li a {
-			font-size: 15px;
-			color: #252525;
-			text-transform: none;
-			font-weight: 600;
-			padding: 8px 6px;
-			display: inline-block;
-			white-space: nowrap;
-		}
-		/* keep hamburger hidden to avoid duplicate controls */
-		.humberger__open {
-			display: none;
-		}
-	.header__cart {
-		text-align: center;
-		padding: 10px 0 24px;
-	}
-	.over_hid {
-		overflow: hidden;
-	}
+    .header .container {
+        position: relative;
+    }
+    
+    .header__top {
+        display: none;
+    }
+    .header__menu {
+        display: block;
+        padding: 6px 0;
+    }
+    .header__menu ul {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 16px;
+        padding: 6px 12px;
+        margin: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .header__menu ul li {
+        display: inline-block;
+        margin-right: 0;
+    }
+    .header__menu ul li a {
+        font-size: 15px;
+        color: #252525;
+        text-transform: none;
+        font-weight: 600;
+        padding: 8px 6px;
+        display: inline-block;
+        white-space: nowrap;
+    }
+    .humberger__open {
+        display: none;
+    }
+    .header__cart {
+        text-align: center;
+        padding: 10px 0 24px;
+    }
+    .over_hid {
+        overflow: hidden;
+    }
 
-	/* Ensure featured carousel text sits at the bottom edge of the image on small screens */
-	.featured__item {
-		position: relative;
-	}
-	.featured__item__pic {
-		/* keep the picture block as the positioning context */
-		position: relative;
-	}
-	.featured__item__text {
-		position: absolute;
-		left: 0;
-		right: 0;
-		bottom: 10px;
-		text-align: center;
-		padding: 8px 12px;
-		background: rgba(255,255,255,0.85);
-		box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-		margin: 0 12px;
-	}
-	.featured__item__text h6,
-	.featured__item__text h5 {
-		color: #252525;
-		margin: 0;
-	}
+    /* --- [MODIFIED] Mobile Featured Products Fix --- */
+    .featured__item {
+        position: relative;
+        margin-bottom: 30px;
+    }
+    
+    .featured__item__pic {
+        position: relative;
+        /* Ensure the image container handles the layout */
+        display: block; 
+    }
+
+    /* Force icons to be visible on mobile (no hover needed) */
+    .featured__item__pic .featured__item__pic__hover {
+        bottom: 20px;
+        opacity: 1;
+        visibility: visible;
+        z-index: 99; /* Ensure it is above the image */
+    }
+
+    /* Move text BELOW the image so it doesn't cover the buttons */
+    .featured__item__text {
+        position: relative; /* Changed from absolute */
+        left: auto;
+        right: auto;
+        bottom: auto;
+        text-align: center;
+        padding-top: 15px; 
+        background: transparent;
+        box-shadow: none;
+        margin: 0;
+        z-index: 9;
+    }
+    
+    .featured__item__text h6,
+    .featured__item__text h5 {
+        color: #252525;
+        margin-bottom: 5px;
+    }
 }
 
-/* Small Device = 320px */
-
-@media only screen and (max-width: 479px) {
-	.hero__search__form form .hero__search__categories {
-		display: none;
-	}
-	.featured__controls ul li {
-		margin-bottom: 10px;
-	}
-	.product__details__text ul li b {
-		width: 100px;
-	}
-	.product__details__tab .nav-tabs li {
-		margin-right: 20px;
-	}
-	.shoping__cart__btns {
-		text-align: center;
-	}
-	.primary-btn.cart-btn.cart-btn-right {
-		float: none;
-		margin-top: 10px;
-	}
-	.shoping__checkout .primary-btn {
-		display: block;
-		text-align: center;
-		padding: 10px 15px 10px;
-	}
-	.map .map-inside {
-		-webkit-transform: translateX(-125px);
-		-ms-transform: translateX(-125px);
-		transform: translateX(-125px);
-	}
-	.map .map-inside .inside-widget {
-		width: 250px;
-	}
-	.product__details__tab .nav-tabs li {
-		margin-right: 15px;
-	}
-	.shoping__discount form input {
-		width: 100%;
-	}
-	.checkout__order {
-		padding: 20px;
-	}
+/* --- Fix for Big Images (Categories & Products) --- */
+.categories__item, 
+.featured__item__pic {
+    /* "contain" keeps the whole image visible */
+    background-size: contain !important; 
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-color: #ffffff; /* White background */
+    
+    /* NEW: Add padding so the image doesn't touch the edges */
+    padding: 30px; 
+    
+    /* NEW: Force a smaller height. 
+       Even if the screen is wide, the image won't grow taller than this. */
+    height: 230px !important; 
+    width: 100%;
+    
+    /* Optional: Add a border to see the box area clearly */
+    border: 1px solid #f5f5f5; 
+    border-radius: 5px;
 }
+
+/* Ensure the text below the image doesn't overlap */
+.featured__item__text {
+    padding-top: 15px;
+}
+
+/* ==============================================
+   TEXT SLIDER & ARROWS (CONSOLIDATED FIX)
+============================================== */
+
+/* 1. The Container - Lock the height so arrows don't jump */
+.featured__text__slider {
+    padding: 0 50px; 
+    position: relative;
+    margin-bottom: 25px;
+    height: 60px; /* <--- CRITICAL: Locks the container height */
+    display: flex; /* Helps align items vertically */
+    align-items: center; /* Centers items vertically */
+}
+
+/* 2. The Text Items - Fixed dimensions to prevent text jumping */
+.featured__text__slider .filter-item {
+    display: inline-block;
+    width: auto;
+    font-size: 16px;
+    color: #1c1c1c;
+    cursor: pointer;
+    text-align: center;
+    font-weight: 400;
+    transition: all 0.2s ease-in-out;
+    
+    /* THE STABILITY FIX */
+    height: 40px;           /* Force fixed height */
+    line-height: 37px;      /* Center text (40px - 3px border) */
+    padding: 0 15px;        /* Consistent padding */
+    border-bottom: 3px solid transparent; /* Reserve space for the red line */
+    box-sizing: border-box; /* Ensures border doesn't add extra height */
+    margin-top: 10px;       /* Centers it within the 60px container */
+}
+
+/* 3. Hover & Active States */
+.featured__text__slider .filter-item:hover,
+.featured__text__slider .filter-item.active {
+    color: #b94427;
+    font-weight: 700;
+    border-bottom: 3px solid #b94427; /* Only color changes, not size */
+    text-decoration: none;
+}
+
+/* 4. The Arrows - Locked in place */
+.featured__text__slider .owl-nav button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%); /* perfectly centered */
+    width: 35px;       
+    height: 35px;      
+    background: #ffffff !important;
+    border: 1px solid #dcdcdc !important; 
+    color: #333 !important;
+    font-size: 22px !important; 
+    line-height: 33px !important; 
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 4px; 
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    margin: 0; /* Remove default margins that might shift it */
+}
+
+.featured__text__slider .owl-nav button:hover {
+    background: #b94427 !important;
+    color: #ffffff !important;
+    border-color: #b94427 !important;
+}
+
+.featured__text__slider .owl-nav .owl-prev { left: 0; }
+.featured__text__slider .owl-nav .owl-next { right: 0; }
